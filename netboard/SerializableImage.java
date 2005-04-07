@@ -62,7 +62,7 @@ public class SerializableImage implements java.io.Serializable {
         out.defaultWriteObject();
         
         if(this.image != null) {
-            javax.imageio.ImageWriter writer = javax.imageio.ImageIO.getImageWritersByFormatName("png").next();
+            javax.imageio.ImageWriter writer = (javax.imageio.ImageWriter)javax.imageio.ImageIO.getImageWritersByFormatName("png").next();
             javax.imageio.IIOImage iioImage = new javax.imageio.IIOImage(image, null, null);
             java.io.ByteArrayOutputStream outArray = new java.io.ByteArrayOutputStream();
             writer.setOutput(javax.imageio.ImageIO.createImageOutputStream(outArray));
