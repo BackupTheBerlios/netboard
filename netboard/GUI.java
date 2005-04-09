@@ -69,7 +69,7 @@ public class GUI extends javax.swing.JFrame {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle(Main.getAppName() + " " + Main.getVersion());
+        setTitle(Main.getAppName());
         setName(Main.getAppName() + " " + Main.getVersion());
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -184,7 +184,6 @@ public class GUI extends javax.swing.JFrame {
         drawingPanel.setMaximumSize(new java.awt.Dimension(500, 500));
         drawingPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         drawingPanel.setOpaque(false);
-        drawingPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         backgroundPanel.add(drawingPanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
