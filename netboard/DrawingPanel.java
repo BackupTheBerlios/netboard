@@ -71,10 +71,10 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#drawing
      */
     private void initDrawing() {
-        drawing = new java.awt.image.BufferedImage(getWidth(), getHeight(), java.awt.image.BufferedImage.TYPE_INT_RGB);
+        drawing = new java.awt.image.BufferedImage(getWidth(), getHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         java.awt.Graphics2D graphics = drawing.createGraphics();
-        graphics.setColor(java.awt.Color.white);
-        graphics.fillRect(0, 0, getWidth(), getHeight());
+        graphics.setBackground(new java.awt.Color(1.0f, 1.0f, 1.0f, 0.0f));
+        graphics.clearRect(0, 0, getWidth(), getHeight());
         graphics.dispose();
     }
     
@@ -126,7 +126,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
             
-            graphics.setColor(java.awt.Color.white);
+            graphics.setColor(graphics.getBackground());
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
@@ -157,7 +157,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
             
-            graphics.setColor(java.awt.Color.white);
+            graphics.setColor(graphics.getBackground());
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
