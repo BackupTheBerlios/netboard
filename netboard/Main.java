@@ -49,6 +49,10 @@ public class Main {
      * Closes the application doing all the necessary operations before
      */
     static void close() {
+        if (isConnected()) {
+            connection.disconnect();
+        }
+        
         System.exit(0);
     }
     
