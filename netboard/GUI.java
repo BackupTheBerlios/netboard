@@ -156,7 +156,7 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipady = 153;
+        gridBagConstraints.ipady = 400;
         getContentPane().add(toolsToolbar, gridBagConstraints);
 
         statusBar.setText("Ready");
