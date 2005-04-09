@@ -126,7 +126,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
             
-            graphics.setColor(graphics.getBackground());
+            graphics.setColor(java.awt.Color.white);
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
@@ -157,7 +157,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
             
-            graphics.setColor(graphics.getBackground());
+            graphics.setColor(java.awt.Color.white);
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
