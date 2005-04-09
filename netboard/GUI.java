@@ -52,8 +52,9 @@ public class GUI extends javax.swing.JFrame {
         ereaserButton = new javax.swing.JButton();
         colorChooserPanel = new javax.swing.JPanel();
         colorChooserButton = new javax.swing.JButton();
-        drawingPanel = new netboard.DrawingPanel();
         statusBar = new javax.swing.JLabel();
+        backgroundPanel = new javax.swing.JPanel();
+        drawingPanel = new netboard.DrawingPanel();
         mainMenu = new javax.swing.JMenuBar();
         applicationMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
@@ -154,20 +155,9 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipady = 153;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        getContentPane().add(toolsToolbar, gridBagConstraints);
-
-        drawingPanel.setMinimumSize(new java.awt.Dimension(280, 200));
-        drawingPanel.setPreferredSize(new java.awt.Dimension(500, 500));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = -220;
-        gridBagConstraints.ipady = 80;
-        getContentPane().add(drawingPanel, gridBagConstraints);
+        gridBagConstraints.ipady = 153;
+        getContentPane().add(toolsToolbar, gridBagConstraints);
 
         statusBar.setText("Ready");
         statusBar.setMaximumSize(new java.awt.Dimension(2147483647, 15));
@@ -181,6 +171,25 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
         getContentPane().add(statusBar, gridBagConstraints);
+
+        backgroundPanel.setLayout(new java.awt.GridLayout(1, 1));
+
+        backgroundPanel.setBackground(java.awt.Color.white);
+        backgroundPanel.setFocusable(false);
+        backgroundPanel.setMaximumSize(new java.awt.Dimension(500, 500));
+        backgroundPanel.setMinimumSize(new java.awt.Dimension(500, 500));
+        drawingPanel.setLayout(new java.awt.BorderLayout());
+
+        drawingPanel.setFocusable(false);
+        drawingPanel.setMaximumSize(new java.awt.Dimension(500, 500));
+        drawingPanel.setMinimumSize(new java.awt.Dimension(500, 500));
+        drawingPanel.setOpaque(false);
+        drawingPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        backgroundPanel.add(drawingPanel);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        getContentPane().add(backgroundPanel, gridBagConstraints);
 
         applicationMenu.setMnemonic('A');
         applicationMenu.setText("Application");
@@ -467,6 +476,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenu applicationMenu;
     private javax.swing.JSeparator applicationSeparator;
+    private javax.swing.JPanel backgroundPanel;
     private javax.swing.JButton circleButton;
     private javax.swing.JMenuItem clearMenuItem;
     private javax.swing.JColorChooser colorChooser;
