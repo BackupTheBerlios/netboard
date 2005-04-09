@@ -99,8 +99,15 @@ public class Connection extends Thread {
                 java.awt.event.ActionListener timerActionListener = new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         try {
-                            out.writeObject(new netboard.SerializableImage(Main.getGUI().getImage())); // FIXME: not, fuckin', working ://
-                            Main.getGUI().setImage(((netboard.SerializableImage)in.readObject()).getImage()); // FIXME: not, fuckin', working ://                                                        
+                            netboard.SerializableImage image;
+                            
+                            image = new netboard.SerializableImage(Main.getGUI().getImage());
+                            out.writeObject(image); // FIXME: not, fuckin', working ://
+                            image = null;
+                            
+                            image = (netboard.SerializableImage)in.readObject();
+                            Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
+                            image = null;                            
                         } catch (java.io.IOException e) {
                             Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                             error = true;
@@ -108,7 +115,6 @@ public class Connection extends Thread {
                         } catch (java.lang.ClassNotFoundException e) {
                             // FIXME: do some error handling...
                         }
-//                        connectionWrote = true;
                     }
                 };
                 new javax.swing.Timer(actionFreq, timerActionListener).start();                
@@ -118,20 +124,6 @@ public class Connection extends Thread {
                         Thread.sleep(actionFreq/2);
                     }
                 } catch (InterruptedException e) { }
-                
-//                while (error == false) {
-//                    connectionWrote = false;
-//                    
-//                    while (connectionWrote == false) {
-//                        try {
-//                            Main.getGUI().setImage(((netboard.SerializableImage)in.readObject()).getImage()); // FIXME: not, fuckin', working ://
-//                        } catch (ClassNotFoundException e) {
-//                            error = true;
-//                            break;
-//                            // FIXME: do some error handling...
-//                        }
-//                    }
-//                }
                 
                 in.close();
                 out.close();
@@ -162,8 +154,15 @@ public class Connection extends Thread {
                 java.awt.event.ActionListener timerActionListener = new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         try {
-                            out.writeObject(new netboard.SerializableImage(Main.getGUI().getImage())); // FIXME: not, fuckin', working ://
-                            Main.getGUI().setImage(((netboard.SerializableImage)in.readObject()).getImage()); // FIXME: not, fuckin', working ://                            
+                            netboard.SerializableImage image;
+                            
+                            image = new netboard.SerializableImage(Main.getGUI().getImage());
+                            out.writeObject(image); // FIXME: not, fuckin', working ://
+                            image = null;
+                            
+                            image = (netboard.SerializableImage)in.readObject();
+                            Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
+                            image = null;
                         } catch (java.io.IOException e) {
                             Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                             error = true;
@@ -171,7 +170,6 @@ public class Connection extends Thread {
                         } catch (java.lang.ClassNotFoundException e) {
                             // FIXME: do some error handling...
                         }
-//                        connectionWrote = true;
                     }
                 };
                 new javax.swing.Timer(actionFreq, timerActionListener).start();
@@ -182,20 +180,6 @@ public class Connection extends Thread {
                     }
                 } catch (InterruptedException e) { }
                     
-//                while (error == false) {
-//                    connectionWrote = false;
-//                    
-//                    while (connectionWrote == false) {
-//                        try {
-//                            Main.getGUI().setImage(((netboard.SerializableImage)in.readObject()).getImage()); // FIXME: not, fuckin', working ://
-//                        } catch (ClassNotFoundException e) {
-//                            error = true;
-//                            break;
-//                            // FIXME: do some error handling...
-//                        }
-//                    }
-//                }
-                
                 in.close();
                 out.close();
                 disconnect();
@@ -212,10 +196,6 @@ public class Connection extends Thread {
      * @see netboard.Connection#setDestination(String)
      */
     private String destination = null;
-//    /**
-//     * This connection's write status - if it has written data to the socket since last check this is <CODE>true</CODE> and <CODE>false</CODE> otherwise
-//     */
-//    private boolean connectionWrote = false; // FIXME: This one _really_ doesn't belong here!
     /**
      * The connection's error status - if an error occured this is <CODE>true</CODE> and <CODE>false</CODE> otherwise
      */

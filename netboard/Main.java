@@ -178,6 +178,10 @@ public class Main {
                 connection = new Connection();
                 setConnected(true);
             }
+            
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) { }
         }
     }
     
