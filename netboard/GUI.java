@@ -260,6 +260,14 @@ public class GUI extends javax.swing.JFrame {
                 clearMenuItemActionPerformed(evt);
             }
         });
+        clearMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                clearMenuItemMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                clearMenuItemMouseExited(evt);
+            }
+        });
 
         editMenu.add(clearMenuItem);
 
@@ -292,6 +300,14 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void clearMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMenuItemMouseExited
+        restorePreviousStatus();
+    }//GEN-LAST:event_clearMenuItemMouseExited
+
+    private void clearMenuItemMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMenuItemMouseEntered
+        setStatus("Clear the drawing area");
+    }//GEN-LAST:event_clearMenuItemMouseEntered
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
         drawingPanel.clearImage();
