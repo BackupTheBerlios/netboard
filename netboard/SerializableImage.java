@@ -1,7 +1,5 @@
 /*
- * SerializableImage.java
- *
- * Created on 26 march 2005, 18:16
+ * $Id: SerializableImage.java,v 1.3 2005/04/10 07:44:33 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *

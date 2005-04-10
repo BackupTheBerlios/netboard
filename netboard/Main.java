@@ -1,7 +1,5 @@
 /*
- * Main.java
- *
- * Created on 18 march 2005, 12:44
+ * $Id: Main.java,v 1.4 2005/04/10 07:44:33 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *

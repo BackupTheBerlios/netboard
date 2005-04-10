@@ -1,7 +1,5 @@
 /*
- * GUI.java
- *
- * Created on 18 march 2005, 12:59
+ * $Id: GUI.java,v 1.6 2005/04/10 07:44:33 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
