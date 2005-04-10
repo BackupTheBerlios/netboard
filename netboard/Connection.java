@@ -1,5 +1,5 @@
 /*
- * $Id: Connection.java,v 1.4 2005/04/10 07:44:33 golish Exp $ 
+ * $Id: Connection.java,v 1.5 2005/04/10 13:30:29 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -34,6 +34,7 @@ public class Connection extends Thread {
      */
     public Connection() {
         setDaemon(true);
+        Main.setConnected(true);
         start();
     }
     
@@ -86,7 +87,6 @@ public class Connection extends Thread {
                 serverSocket = new java.net.ServerSocket(Main.getPort());
                 socket = serverSocket.accept();
                 
-                Main.setConnected(true);
                 Main.getGUI().setStatus("Connected to " + socket.getInetAddress().getHostName());
                 
                 final java.io.ObjectOutput out = new java.io.ObjectOutputStream(socket.getOutputStream());
@@ -141,7 +141,6 @@ public class Connection extends Thread {
                     Main.getGUI().showError("Unknown host: " + destination);
                 }
                 
-                Main.setConnected(true);
                 Main.getGUI().setStatus("Connected to " + destination);
                 
                 final java.io.ObjectOutput out = new java.io.ObjectOutputStream(socket.getOutputStream());
