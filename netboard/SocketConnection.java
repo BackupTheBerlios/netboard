@@ -1,5 +1,5 @@
 /*
- * $Id: Connection.java,v 1.5 2005/04/10 13:30:29 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.1 2005/04/30 10:30:50 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -25,15 +25,16 @@ package netboard;
  * Class handling the connection with another instance of netboard
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
-public class Connection extends Thread {
+public class SocketConnection extends Thread {
     
     /**
-     * Creates a new instance of Connection and starts the connection thread
-     * @see netboard.Connection#run()
-     * @see netboard.Connection#disconnect()
+     * Creates a new instance of SocketConnection and starts the connection thread
+     * @see netboard.SocketConnection#run()
+     * @see netboard.SocketConnection#disconnect()
      */
-    public Connection() {
+    public SocketConnection() {
         setDaemon(true);
+        setPriority(Thread.NORM_PRIORITY/4);
         Main.setConnected(true);
         start();
     }
@@ -41,7 +42,7 @@ public class Connection extends Thread {
     /**
      * Set the destination address of the connection
      * @param dest Address to which the destination address of the connection should be set
-     * @see netboard.Connection#destination
+     * @see netboard.SocketConnection#destination
      */
     public void setDestination(String dest) {
         destination = dest;
@@ -49,8 +50,8 @@ public class Connection extends Thread {
     
     /**
      * Disconnects the network connection and makes sure that the application is ready for another connection
-     * @see netboard.Connection#Connection()
-     * @see netboard.Connection#run()
+     * @see netboard.SocketConnection#SocketConnection()
+     * @see netboard.SocketConnection#run()
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
      * @see netboard.Main#setConnected(boolean)
@@ -65,8 +66,8 @@ public class Connection extends Thread {
     
     /**
      * Runs the connection thread, i.e. connects to the peer and handles sending/receiving data
-     * @see netboard.Connection#Connection()
-     * @see netboard.Connection#disconnect()
+     * @see netboard.SocketConnection#SocketConnection()
+     * @see netboard.SocketConnection#disconnect()
      * @see netboard.Main#getMode()
      * @see netboard.Main#setMode(int)
      */
@@ -102,10 +103,12 @@ public class Connection extends Thread {
                             image = new netboard.SerializableImage(Main.getGUI().getImage());
                             out.writeObject(image); // FIXME: not, fuckin', working ://
                             image = null;
+//                            yield();                            
                             
                             image = (netboard.SerializableImage)in.readObject();
                             Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
                             image = null;                            
+//                            yield();                            
                         } catch (java.io.IOException e) {
                             Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                             error = true;
@@ -119,6 +122,7 @@ public class Connection extends Thread {
                 
                 try {
                     while (error == false) { 
+//                        yield();                        
                         Thread.sleep(actionFreq/2);
                     }
                 } catch (InterruptedException e) { }
@@ -156,10 +160,12 @@ public class Connection extends Thread {
                             image = new netboard.SerializableImage(Main.getGUI().getImage());
                             out.writeObject(image); // FIXME: not, fuckin', working ://
                             image = null;
+//                            yield();
                             
                             image = (netboard.SerializableImage)in.readObject();
                             Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
                             image = null;
+//                            yield();
                         } catch (java.io.IOException e) {
                             Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                             error = true;
@@ -173,6 +179,7 @@ public class Connection extends Thread {
                 
                 try {
                     while (error == false) { 
+//                        yield();                        
                         Thread.sleep(actionFreq/2);
                     }
                 } catch (InterruptedException e) { }
@@ -190,7 +197,7 @@ public class Connection extends Thread {
     // My variables declaration
     /**
      * The destination address of the connection
-     * @see netboard.Connection#setDestination(String)
+     * @see netboard.SocketConnection#setDestination(String)
      */
     private String destination = null;
     /**

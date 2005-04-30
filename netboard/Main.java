@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.4 2005/04/10 07:44:33 golish Exp $
+ * $Id: Main.java,v 1.5 2005/04/30 10:30:50 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -119,9 +119,9 @@ public class Main {
      * Returns the object representing current connection
      * @return The object representing current connection
      * @see netboard.Main#connection
-     * @see netboard.Connection
+     * @see netboard.SocketConnection
      */
-    static netboard.Connection getConnection() {
+    static netboard.SocketConnection getConnection() {
         return connection;
     }
     
@@ -140,7 +140,7 @@ public class Main {
      * @return <CODE>true</CODE> if the application is connected to another instance of netboard, <CODE>false</CODE> otherwise
      * @see netboard.Main#connected
      * @see netboard.Main#setConnected(boolean)
-     * @see netboard.Connection#disconnect()
+     * @see netboard.SocketConnection#disconnect()
      */
     public static boolean isConnected() {
         return connected;
@@ -151,7 +151,7 @@ public class Main {
      * @param c Value of the new connection state
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
-     * @see netboard.Connection#disconnect()
+     * @see netboard.SocketConnection#disconnect()
      */
     static void setConnected(boolean c) {
         connected = c;
@@ -173,7 +173,7 @@ public class Main {
         
         while (true) {
             if (isConnected() == false) {
-                connection = new Connection();
+                connection = new SocketConnection();
                 setConnected(true);
             }
             
@@ -225,9 +225,9 @@ public class Main {
     /**
      * Object representing current connection
      * @see netboard.Main#getConnection()
-     * @see netboard.Connection
+     * @see netboard.SocketConnection
      */
-    private static netboard.Connection connection;
+    private static netboard.SocketConnection connection;
     /**
      * Object representing GUI of the current application
      * @see netboard.Main#getGUI()
@@ -238,7 +238,7 @@ public class Main {
      * The connection state: <CODE>true</CODE> if the application is connected to another instance of netboard, <CODE>false</CODE> otherwise
      * @see netboard.Main#isConnected()
      * @see netboard.Main#setConnected(boolean)
-     * @see netboard.Connection#disconnect()
+     * @see netboard.SocketConnection#disconnect()
      */
     private static boolean connected = false;
     // End of my variables declaration
