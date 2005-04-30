@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.1 2005/04/30 10:30:50 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.2 2005/04/30 10:42:16 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -22,7 +22,7 @@
 package netboard;
 
 /**
- * Class handling the connection with another instance of netboard
+ * Class handling the connection with another instance of netboard (via TCP/IP sockets)
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
 public class SocketConnection extends Thread {
