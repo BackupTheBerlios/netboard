@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.5 2005/05/02 10:37:30 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.6 2005/05/02 11:29:47 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -34,26 +34,27 @@ public class SocketConnection {
     private class CommunicationTask extends java.util.TimerTask {
         public void run() {
             try {
-                netboard.SerializableImage image;
-                           
+                netboard.SerializableImage image;                
+
+                out.writeInt(PACKET_IMG);                
                 image = new netboard.SerializableImage(Main.getGUI().getImage());
-                out.writeInt(PACKET_IMG);
                 out.writeObject(image); 
                 image = null;
-                 
-                int packet_type = in.readInt();
                 
-                if (packet_type == PACKET_IMG) {
+                int packetType = in.readInt();
+
+                if (packetType == PACKET_IMG) {                    
                     image = (netboard.SerializableImage)in.readUnshared();                
                     Main.getGUI().setImage(image.getImage()); 
-                    image = null;                            
-                } else if (packet_type == PACKET_END) {
+                    image = null;                
+                } else if (packetType == PACKET_END) {
                     disconnect();
                 } else {
                     throw new java.io.IOException("unexpected stream content");
                 }
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
+                disconnect();
                 // FIXME: do something more sane...
             } catch (java.lang.ClassNotFoundException e) {
                 // FIXME: do some error handling...
@@ -126,12 +127,23 @@ public class SocketConnection {
     public void disconnect() {
         if (Main.isConnected() == true) {
             try {
-                out.writeInt(PACKET_END);
                 timer.cancel();
+                
+                out.writeInt(PACKET_END);
+                
                 in.close();
+                in = null;
                 out.close();
+                out = null;
+                
+                socket.close();
+                socket = null;
+                if (serverSocket != null) {
+                    serverSocket.close();
+                    serverSocket = null;
+                }
             } catch (java.io.IOException e) {
-                Main.getGUI().showError("Error while disconnection: " +  e.getMessage());                
+                Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());                
             }
             
             Main.setConnected(false);
@@ -145,7 +157,7 @@ public class SocketConnection {
      */
     private java.net.Socket socket = null;
     /**
-     * Object representing the connection socket for the server mode
+     * Object representing the listening socket for the server mode
      */
     private java.net.ServerSocket serverSocket = null;
     /**
