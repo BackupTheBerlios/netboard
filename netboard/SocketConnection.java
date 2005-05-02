@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.3 2005/05/02 09:48:35 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.4 2005/05/02 10:21:57 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -40,7 +40,7 @@ public class SocketConnection {
                 out.writeObject(image); // FIXME: not, fuckin', working ://
                 image = null;
                             
-                image = (netboard.SerializableImage)in.readObject();
+                image = (netboard.SerializableImage)in.readUnshared();                
                 Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
                 image = null;                            
             } catch (java.io.IOException e) {
@@ -117,6 +117,7 @@ public class SocketConnection {
     public void disconnect() {
         if (Main.isConnected() == true) {
             try {
+                timer.cancel();
                 in.close();
                 out.close();
             } catch (java.io.IOException e) {
@@ -140,11 +141,11 @@ public class SocketConnection {
     /**
      * Object representing the output stream
      */
-    private java.io.ObjectOutput out;
+    private java.io.ObjectOutputStream out;
     /**
      * Object representing the input stream
      */
-    private java.io.ObjectInput in;    
+    private java.io.ObjectInputStream in;    
     /**
      * Timer which handles communication tasks
      * @see netboard.SocketConnection.CommunicationTask
@@ -163,5 +164,6 @@ public class SocketConnection {
      * @see netboard.SocketConnection#timer
      */
     private final int communicationFreq = 750;
+    private final Enum packetType = { IMAGE = 0, END = 1 };
     // End of my variables declaration
 }
