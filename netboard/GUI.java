@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.8 2005/05/02 14:02:29 golish Exp $
+ * $Id: GUI.java,v 1.9 2005/05/02 21:35:18 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -91,7 +91,7 @@ public class GUI extends javax.swing.JFrame {
 
         toolsToolbar.setFloatable(false);
         toolsToolbar.setOrientation(1);
-        toolsToolbar.setMaximumSize(new java.awt.Dimension(80, 32894));
+        toolsToolbar.setMaximumSize(new java.awt.Dimension(80, 127));
         toolsToolbar.setMinimumSize(new java.awt.Dimension(80, 127));
         toolsToolbar.setPreferredSize(new java.awt.Dimension(80, 127));
         penButton.setText("Pen");
@@ -166,8 +166,9 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.ipady = 400;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         getContentPane().add(toolsToolbar, gridBagConstraints);
 
         statusBar.setText("Ready");
@@ -179,26 +180,36 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 243;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 1, 0);
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         getContentPane().add(statusBar, gridBagConstraints);
 
-        backgroundPanel.setLayout(new java.awt.GridLayout(1, 1));
+        backgroundPanel.setLayout(new java.awt.GridBagLayout());
 
         backgroundPanel.setBackground(java.awt.Color.white);
         backgroundPanel.setFocusable(false);
-        backgroundPanel.setMaximumSize(new java.awt.Dimension(500, 500));
         backgroundPanel.setMinimumSize(new java.awt.Dimension(500, 500));
+        backgroundPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         drawingPanel.setLayout(new java.awt.BorderLayout());
 
         drawingPanel.setFocusable(false);
-        drawingPanel.setMaximumSize(new java.awt.Dimension(500, 500));
         drawingPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         drawingPanel.setOpaque(false);
-        backgroundPanel.add(drawingPanel);
+        drawingPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        backgroundPanel.add(drawingPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         getContentPane().add(backgroundPanel, gridBagConstraints);
 
         applicationMenu.setMnemonic('A');
