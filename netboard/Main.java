@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.5 2005/04/30 10:30:50 golish Exp $
+ * $Id: Main.java,v 1.6 2005/05/02 09:48:35 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -32,7 +32,7 @@ public class Main {
     /**
      * Initializes the application
      */
-    public static void init() {
+    static void init() {
         String lookAndFeel = javax.swing.UIManager.getCrossPlatformLookAndFeelClassName();
         try {
             javax.swing.UIManager.setLookAndFeel(lookAndFeel);
@@ -48,7 +48,7 @@ public class Main {
      */
     static void close() {
         if (isConnected()) {
-            connection.disconnect();
+            disconnect();
         }
         
         System.exit(0);
@@ -116,16 +116,6 @@ public class Main {
     }
     
     /**
-     * Returns the object representing current connection
-     * @return The object representing current connection
-     * @see netboard.Main#connection
-     * @see netboard.SocketConnection
-     */
-    static netboard.SocketConnection getConnection() {
-        return connection;
-    }
-    
-    /**
      * Returns the object representing GUI of the current application
      * @return The object representing GUI of the current application
      * @see netboard.Main#gui
@@ -156,6 +146,40 @@ public class Main {
     static void setConnected(boolean c) {
         connected = c;
     }
+
+    /**
+     * Returns the address of the destination host
+     * @return Address of the destination host
+     * @see netboard.Main#destination
+     */
+    public static String getDestination() {
+        return destination;
+    }    
+
+    /**
+     * Set the destination address of the connection
+     * @param dest Address to which the destination address of the connection should be set
+     * @see netboard.Main#destination
+     */
+    static void setDestination(String dest) {
+        destination = dest;
+    }   
+    
+    static void connect() {
+        if (connection != null) {
+            disconnect();
+        }
+
+        connection = new netboard.SocketConnection(destination, mode);
+    }
+    
+    static void disconnect() {
+        if (connection != null) {
+            connection.disconnect();
+        }
+        
+        connection = null;
+    }
     
     /**
      * Main method of this application
@@ -170,17 +194,6 @@ public class Main {
                 gui.setVisible(true);
             }
         });
-        
-        while (true) {
-            if (isConnected() == false) {
-                connection = new SocketConnection();
-                setConnected(true);
-            }
-            
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) { }
-        }
     }
     
     // My variables declaration
@@ -241,5 +254,11 @@ public class Main {
      * @see netboard.SocketConnection#disconnect()
      */
     private static boolean connected = false;
+    /**
+     * The destination address of the connection
+     * @see netboard.Main#getDestination()
+     * @see netboard.Main#setDestination(String)
+     */
+    private static String destination = null;    
     // End of my variables declaration
 }

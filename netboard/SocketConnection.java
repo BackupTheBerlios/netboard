@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.2 2005/04/30 10:42:16 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.3 2005/05/02 09:48:35 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -25,188 +25,143 @@ package netboard;
  * Class handling the connection with another instance of netboard (via TCP/IP sockets)
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
-public class SocketConnection extends Thread {
+public class SocketConnection {
+    /**
+     * Class representing the actions performed by the timer (i.e. reading data from the socket and writing to it)
+     * @see netboard.SocketConnection#communicationTask
+     * @see netboard.SocketConnection#timer
+     */
+    private class CommunicationTask extends java.util.TimerTask {
+        public void run() {
+            try {
+                netboard.SerializableImage image;
+                           
+                image = new netboard.SerializableImage(Main.getGUI().getImage());
+                out.writeObject(image); // FIXME: not, fuckin', working ://
+                image = null;
+                            
+                image = (netboard.SerializableImage)in.readObject();
+                Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
+                image = null;                            
+            } catch (java.io.IOException e) {
+                Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
+                // FIXME: do something more sane...
+            } catch (java.lang.ClassNotFoundException e) {
+                // FIXME: do some error handling...
+            }            
+        }
+    }
     
     /**
      * Creates a new instance of SocketConnection and starts the connection thread
-     * @see netboard.SocketConnection#run()
      * @see netboard.SocketConnection#disconnect()
-     */
-    public SocketConnection() {
-        setDaemon(true);
-        setPriority(Thread.NORM_PRIORITY/4);
-        Main.setConnected(true);
-        start();
-    }
-    
-    /**
-     * Set the destination address of the connection
-     * @param dest Address to which the destination address of the connection should be set
-     * @see netboard.SocketConnection#destination
-     */
-    public void setDestination(String dest) {
-        destination = dest;
-    }
-    
-    /**
-     * Disconnects the network connection and makes sure that the application is ready for another connection
-     * @see netboard.SocketConnection#SocketConnection()
-     * @see netboard.SocketConnection#run()
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
      * @see netboard.Main#setConnected(boolean)
+     * @see netboard.Main#connect()
+     * @see netboard.Main#disconnect()
+     * @param destination Address of the destination host
+     * @param mode Mode of the connection: 0 - server, 1 - client
      */
-    public void disconnect() {
-        if (Main.isConnected() == true) {
-            Main.setConnected(false);
-            Main.getGUI().setStatus("Disconnected");
-            stop();
-        }
-    }
-    
-    /**
-     * Runs the connection thread, i.e. connects to the peer and handles sending/receiving data
-     * @see netboard.SocketConnection#SocketConnection()
-     * @see netboard.SocketConnection#disconnect()
-     * @see netboard.Main#getMode()
-     * @see netboard.Main#setMode(int)
-     */
-    
-    public void run() {
-        synchronized(this) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) { }
-        }
-        
-        if (Main.getMode() == 0) {
+    public SocketConnection(String destination, int mode) {        
+        if (mode == 0) {
             Main.getGUI().setStatus("Working as a server: waiting for incoming connection...");
             
             try {
-                java.net.ServerSocket serverSocket = null;
-                java.net.Socket socket = null;
                 serverSocket = new java.net.ServerSocket(Main.getPort());
                 socket = serverSocket.accept();
                 
-                Main.getGUI().setStatus("Connected to " + socket.getInetAddress().getHostName());
-                
-                final java.io.ObjectOutput out = new java.io.ObjectOutputStream(socket.getOutputStream());
-                final java.io.ObjectInput in = new java.io.ObjectInputStream(socket.getInputStream());
-                
-                error = false;
-
-                java.awt.event.ActionListener timerActionListener = new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        try {
-                            netboard.SerializableImage image;
-                            
-                            image = new netboard.SerializableImage(Main.getGUI().getImage());
-                            out.writeObject(image); // FIXME: not, fuckin', working ://
-                            image = null;
-//                            yield();                            
-                            
-                            image = (netboard.SerializableImage)in.readObject();
-                            Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
-                            image = null;                            
-//                            yield();                            
-                        } catch (java.io.IOException e) {
-                            Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
-                            error = true;
-                            // FIXME: do something more sane...
-                        } catch (java.lang.ClassNotFoundException e) {
-                            // FIXME: do some error handling...
-                        }
-                    }
-                };
-                new javax.swing.Timer(actionFreq, timerActionListener).start();                
-                
-                try {
-                    while (error == false) { 
-//                        yield();                        
-                        Thread.sleep(actionFreq/2);
-                    }
-                } catch (InterruptedException e) { }
-                
-                in.close();
-                out.close();
-                disconnect();
+                out = new java.io.ObjectOutputStream(socket.getOutputStream());
+                in = new java.io.ObjectInputStream(socket.getInputStream());
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                 // FIXME: do something more sane...
             }
-        } else if (Main.getMode() == 1) {
+        } else if (mode == 1) {
             Main.getGUI().setStatus("Working as a client: connecting to " + destination + "...");
             
             try {
-                java.net.Socket socket = null;
                 try {
                     socket = new java.net.Socket(destination, Main.getPort());
                 } catch (java.net.UnknownHostException e) {
                     Main.getGUI().showError("Unknown host: " + destination);
                 }
                 
-                Main.getGUI().setStatus("Connected to " + destination);
-                
-                final java.io.ObjectOutput out = new java.io.ObjectOutputStream(socket.getOutputStream());
-                final java.io.ObjectInput in = new java.io.ObjectInputStream(socket.getInputStream());
-                
-                error = false;
-                    
-                java.awt.event.ActionListener timerActionListener = new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        try {
-                            netboard.SerializableImage image;
-                            
-                            image = new netboard.SerializableImage(Main.getGUI().getImage());
-                            out.writeObject(image); // FIXME: not, fuckin', working ://
-                            image = null;
-//                            yield();
-                            
-                            image = (netboard.SerializableImage)in.readObject();
-                            Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
-                            image = null;
-//                            yield();
-                        } catch (java.io.IOException e) {
-                            Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
-                            error = true;
-                            // FIXME: do something more sane...
-                        } catch (java.lang.ClassNotFoundException e) {
-                            // FIXME: do some error handling...
-                        }
-                    }
-                };
-                new javax.swing.Timer(actionFreq, timerActionListener).start();
-                
-                try {
-                    while (error == false) { 
-//                        yield();                        
-                        Thread.sleep(actionFreq/2);
-                    }
-                } catch (InterruptedException e) { }
-                    
-                in.close();
-                out.close();
-                disconnect();
+                out = new java.io.ObjectOutputStream(socket.getOutputStream());
+                in = new java.io.ObjectInputStream(socket.getInputStream());        
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " +  e.getMessage());
                 // FIXME: do something more sane...
-            }
-        }
+            }  
+        }   
+        
+        Main.setConnected(true);        
+        Main.getGUI().setStatus("Connected to " + socket.getInetAddress().getHostName());           
+        
+        timer = new java.util.Timer();
+        communicationTask = new CommunicationTask();
+        
+        timer.schedule(communicationTask, communicationFreq, communicationFreq);
     }
     
+
+    /**
+     * Disconnects the network connection and makes sure that the application is ready for another connection
+     * @see netboard.SocketConnection#SocketConnection()
+     * @see netboard.Main#connected
+     * @see netboard.Main#isConnected()
+     * @see netboard.Main#setConnected(boolean)
+     * @see netboard.Main#connect()
+     * @see netboard.Main#disconnect()
+     */
+    public void disconnect() {
+        if (Main.isConnected() == true) {
+            try {
+                in.close();
+                out.close();
+            } catch (java.io.IOException e) {
+                Main.getGUI().showError("Error while disconnection: " +  e.getMessage());                
+            }
+            
+            Main.setConnected(false);
+            Main.getGUI().setStatus("Disconnected");
+        }
+    }
+        
     // My variables declaration
     /**
-     * The destination address of the connection
-     * @see netboard.SocketConnection#setDestination(String)
+     * Object representing the connection socket
      */
-    private String destination = null;
+    private java.net.Socket socket = null;
     /**
-     * The connection's error status - if an error occured this is <CODE>true</CODE> and <CODE>false</CODE> otherwise
+     * Object representing the connection socket for the server mode
      */
-    private boolean error = false; // FIXME: This one _really_ doesn't belong here!
+    private java.net.ServerSocket serverSocket = null;
+    /**
+     * Object representing the output stream
+     */
+    private java.io.ObjectOutput out;
+    /**
+     * Object representing the input stream
+     */
+    private java.io.ObjectInput in;    
+    /**
+     * Timer which handles communication tasks
+     * @see netboard.SocketConnection.CommunicationTask
+     * @see netboard.SocketConnection#communicationTask
+     * @see netboard.SocketConnection#communicationFreq
+     */
+    private java.util.Timer timer;
+    /**
+     * Object representing the tasks which are performed by the timer
+     * @see netboard.SocketConnection.CommunicationTask
+     * @see netboard.SocketConnecion#timer
+     */
+    private CommunicationTask communicationTask;
     /**
      * The frequency at which data should be written to the socket and read from it
+     * @see netboard.SocketConnection#timer
      */
-    private final int actionFreq = 750;
+    private final int communicationFreq = 750;
     // End of my variables declaration
 }

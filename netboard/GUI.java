@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.6 2005/04/10 07:44:33 golish Exp $
+ * $Id: GUI.java,v 1.7 2005/05/02 09:48:35 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -319,7 +319,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_disconnectMenuItemMouseEntered
     
     private void disconnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectMenuItemActionPerformed
-        Main.getConnection().disconnect();
+        Main.disconnect();
     }//GEN-LAST:event_disconnectMenuItemActionPerformed
     
     private void connectMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_connectMenuItemMouseExited
@@ -339,12 +339,14 @@ public class GUI extends javax.swing.JFrame {
                 options, options[1]));
         
         if (Main.getMode() == 1) {
-            Main.getConnection().setDestination((String)javax.swing.JOptionPane.showInputDialog(this,
+            Main.setDestination((String)javax.swing.JOptionPane.showInputDialog(this,
                     "Enter the server's address:", Main.getAppName() + " - Open connection",
                     javax.swing.JOptionPane.QUESTION_MESSAGE, null, null, "localhost"));
         }
         
-        Main.getConnection().interrupt();
+        Main.connect();
+        
+//        Main.getConnection().interrupt();
     }//GEN-LAST:event_connectMenuItemActionPerformed
     
     private void aboutMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutMenuItemMouseExited
