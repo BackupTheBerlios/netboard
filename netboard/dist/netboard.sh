@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: netboard.sh,v 1.1 2005/05/02 17:16:56 golish Exp $
+# $Id: netboard.sh,v 1.2 2005/05/02 22:04:55 golish Exp $
 #
 # Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
 #
@@ -20,4 +20,10 @@
 # USA.
 #
 
-java -jar netboard.jar &
+if [ "`java -version 2>&1`" != "" ]; then
+	java -jar netboard.jar &
+else
+	echo "No 'java' executable found in your system search path."
+	echo "Please update the search path or run the .jar file by hand."
+	exit 1
+fi
