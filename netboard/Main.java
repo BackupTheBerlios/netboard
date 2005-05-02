@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.6 2005/05/02 09:48:35 golish Exp $
+ * $Id: Main.java,v 1.7 2005/05/02 14:02:29 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -235,6 +235,8 @@ public class Main {
      * @see netboard.Main#setMode(int)
      */
     private static int mode;
+    public static final int SERVER_MODE = 0;
+    public static final int CLIENT_MODE = 1;    
     /**
      * Object representing current connection
      * @see netboard.Main#getConnection()

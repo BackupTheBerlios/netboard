@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.6 2005/05/02 11:29:47 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.7 2005/05/02 14:02:29 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -50,7 +50,7 @@ public class SocketConnection {
                 } else if (packetType == PACKET_END) {
                     disconnect();
                 } else {
-                    throw new java.io.IOException("unexpected stream content");
+                    throw new java.io.IOException("Unexpected stream content");
                 }
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
@@ -74,7 +74,7 @@ public class SocketConnection {
      * @param mode Mode of the connection: 0 - server, 1 - client
      */
     public SocketConnection(String destination, int mode) {        
-        if (mode == 0) {
+        if (mode == Main.SERVER_MODE) {
             Main.getGUI().setStatus("Working as a server: waiting for incoming connection...");
             
             try {
@@ -87,7 +87,7 @@ public class SocketConnection {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                 // FIXME: do something more sane...
             }
-        } else if (mode == 1) {
+        } else if (mode == Main.CLIENT_MODE) {
             Main.getGUI().setStatus("Working as a client: connecting to " + destination + "...");
             
             try {
@@ -185,7 +185,7 @@ public class SocketConnection {
      * The frequency at which data should be written to the socket and read from it
      * @see netboard.SocketConnection#timer
      */
-    private final int communicationFreq = 750;
+    private final int communicationFreq = 500;
     private final int PACKET_IMG = 0;
     private final int PACKET_END = 1;
     // End of my variables declaration

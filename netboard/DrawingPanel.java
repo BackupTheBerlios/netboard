@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.4 2005/04/10 07:44:33 golish Exp $
+ * $Id: DrawingPanel.java,v 1.5 2005/05/02 14:02:29 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -71,7 +71,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     private void initDrawing() {
         drawing = new java.awt.image.BufferedImage(getWidth(), getHeight(), java.awt.image.BufferedImage.TYPE_INT_ARGB);
         java.awt.Graphics2D graphics = drawing.createGraphics();
-        graphics.setBackground(new java.awt.Color(1.0f, 1.0f, 1.0f, 0.0f));
+        graphics.setBackground(new java.awt.Color(0.0f, 0.0f, 0.0f, 0.0f));
         graphics.clearRect(0, 0, getWidth(), getHeight());
         graphics.dispose();
     }

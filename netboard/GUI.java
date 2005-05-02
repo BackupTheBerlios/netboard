@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.7 2005/05/02 09:48:35 golish Exp $
+ * $Id: GUI.java,v 1.8 2005/05/02 14:02:29 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -26,6 +26,16 @@ package netboard;
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
 public class GUI extends javax.swing.JFrame {
+
+    private class PNGFilter extends javax.swing.filechooser.FileFilter {
+        public boolean accept(java.io.File file) {
+            return file.getName().toLowerCase().endsWith(".png") || file.isDirectory();
+        }
+        
+        public String getDescription() {
+            return "PNG image (*.png)";
+        }
+    }
     
     /** Creates new GUI form */
     public GUI() {
@@ -59,7 +69,10 @@ public class GUI extends javax.swing.JFrame {
         disconnectMenuItem = new javax.swing.JMenuItem();
         applicationSeparator = new javax.swing.JSeparator();
         exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
+        imageMenu = new javax.swing.JMenu();
+        loadMenuItem = new javax.swing.JMenuItem();
+        saveMenuItem = new javax.swing.JMenuItem();
+        imageSeparator = new javax.swing.JSeparator();
         clearMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -248,8 +261,30 @@ public class GUI extends javax.swing.JFrame {
 
         mainMenu.add(applicationMenu);
 
-        editMenu.setMnemonic('E');
-        editMenu.setText("Edit");
+        imageMenu.setMnemonic('I');
+        imageMenu.setText("Image");
+        loadMenuItem.setMnemonic('L');
+        loadMenuItem.setText("Load...");
+        loadMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadMenuItemActionPerformed(evt);
+            }
+        });
+
+        imageMenu.add(loadMenuItem);
+
+        saveMenuItem.setMnemonic('S');
+        saveMenuItem.setText("Save...");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
+
+        imageMenu.add(saveMenuItem);
+
+        imageMenu.add(imageSeparator);
+
         clearMenuItem.setMnemonic('C');
         clearMenuItem.setText("Clear");
         clearMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -266,9 +301,9 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        editMenu.add(clearMenuItem);
+        imageMenu.add(clearMenuItem);
 
-        mainMenu.add(editMenu);
+        mainMenu.add(imageMenu);
 
         helpMenu.setMnemonic('H');
         helpMenu.setText("Help");
@@ -297,6 +332,71 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        javax.swing.JFileChooser fileChooserDialog = new javax.swing.JFileChooser();
+        
+        fileChooserDialog.setFileFilter(new PNGFilter());
+        fileChooserDialog.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);
+        fileChooserDialog.setDialogTitle("Save the image to file");
+        int result = fileChooserDialog.showSaveDialog(this);
+       
+        if (result == javax.swing.JFileChooser.CANCEL_OPTION) {
+            return;
+        } else if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooserDialog.getSelectedFile();
+            
+            if (file.getName().toLowerCase().endsWith(".png") != true) {
+                file = new java.io.File(file.getAbsolutePath() + ".png");
+            }
+            
+            if (file.exists()) {
+                int response = javax.swing.JOptionPane.showConfirmDialog (null, 
+                        "File " + file.getName() + " already exists. Overwrite?","Confirm Overwrite",
+                        javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE);
+            
+                if (response == javax.swing.JOptionPane.CANCEL_OPTION) { 
+                    return;    
+                }
+            }
+        
+            try {
+                java.awt.image.BufferedImage img = getImage();
+                java.awt.image.BufferedImage image = new java.awt.image.BufferedImage(img.getWidth(), img.getHeight(), img.getType());
+                java.awt.Graphics2D graphics = image.createGraphics();              
+                
+                graphics.setBackground(java.awt.Color.white);
+                graphics.clearRect(0, 0, image.getWidth(), image.getHeight());                
+                graphics.drawImage(img, 0, 0, null);
+                graphics.dispose();
+                
+                javax.imageio.ImageIO.write(image, "png", file);
+            } catch (java.io.IOException e) {
+                showError("Error saving the image: " + e.getMessage());
+            }
+        }        
+    }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void loadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMenuItemActionPerformed
+        javax.swing.JFileChooser fileChooserDialog = new javax.swing.JFileChooser();
+
+        fileChooserDialog.setFileFilter(new PNGFilter());        
+        fileChooserDialog.setFileSelectionMode(javax.swing.JFileChooser.FILES_ONLY);        
+        fileChooserDialog.setDialogTitle("Open an image file");        
+        int result = fileChooserDialog.showOpenDialog(this);
+        
+        if (result == javax.swing.JFileChooser.CANCEL_OPTION) {
+            return;
+        } else if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooserDialog.getSelectedFile();
+            
+            try {
+                setImage(javax.imageio.ImageIO.read(file));
+            } catch (java.io.IOException e) {
+                showError("Error loading the image: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_loadMenuItemActionPerformed
 
     private void clearMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearMenuItemMouseExited
         restorePreviousStatus();
@@ -338,15 +438,13 @@ public class GUI extends javax.swing.JFrame {
                 javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.QUESTION_MESSAGE, null,
                 options, options[1]));
         
-        if (Main.getMode() == 1) {
+        if (Main.getMode() == Main.CLIENT_MODE) {
             Main.setDestination((String)javax.swing.JOptionPane.showInputDialog(this,
                     "Enter the server's address:", Main.getAppName() + " - Open connection",
                     javax.swing.JOptionPane.QUESTION_MESSAGE, null, null, "localhost"));
         }
         
         Main.connect();
-        
-//        Main.getConnection().interrupt();
     }//GEN-LAST:event_connectMenuItemActionPerformed
     
     private void aboutMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutMenuItemMouseExited
@@ -500,14 +598,17 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JMenuItem disconnectMenuItem;
     private netboard.DrawingPanel drawingPanel;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JButton ereaserButton;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JMenu imageMenu;
+    private javax.swing.JSeparator imageSeparator;
     private javax.swing.JButton lineButton;
+    private javax.swing.JMenuItem loadMenuItem;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JButton penButton;
     private javax.swing.JButton rectangleButton;
+    private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JLabel statusBar;
     private javax.swing.JToolBar toolsToolbar;
     // End of variables declaration//GEN-END:variables
