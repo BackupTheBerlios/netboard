@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.4 2005/05/02 10:21:57 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.5 2005/05/02 10:37:30 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -37,12 +37,21 @@ public class SocketConnection {
                 netboard.SerializableImage image;
                            
                 image = new netboard.SerializableImage(Main.getGUI().getImage());
-                out.writeObject(image); // FIXME: not, fuckin', working ://
+                out.writeInt(PACKET_IMG);
+                out.writeObject(image); 
                 image = null;
-                            
-                image = (netboard.SerializableImage)in.readUnshared();                
-                Main.getGUI().setImage(image.getImage()); // FIXME: not, fuckin', working ://                            
-                image = null;                            
+                 
+                int packet_type = in.readInt();
+                
+                if (packet_type == PACKET_IMG) {
+                    image = (netboard.SerializableImage)in.readUnshared();                
+                    Main.getGUI().setImage(image.getImage()); 
+                    image = null;                            
+                } else if (packet_type == PACKET_END) {
+                    disconnect();
+                } else {
+                    throw new java.io.IOException("unexpected stream content");
+                }
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                 // FIXME: do something more sane...
@@ -117,6 +126,7 @@ public class SocketConnection {
     public void disconnect() {
         if (Main.isConnected() == true) {
             try {
+                out.writeInt(PACKET_END);
                 timer.cancel();
                 in.close();
                 out.close();
@@ -164,6 +174,7 @@ public class SocketConnection {
      * @see netboard.SocketConnection#timer
      */
     private final int communicationFreq = 750;
-    private final Enum packetType = { IMAGE = 0, END = 1 };
+    private final int PACKET_IMG = 0;
+    private final int PACKET_END = 1;
     // End of my variables declaration
 }
