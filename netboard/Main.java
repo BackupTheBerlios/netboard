@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.7 2005/05/02 14:02:29 golish Exp $
+ * $Id: Main.java,v 1.8 2005/05/05 17:33:08 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -170,7 +170,12 @@ public class Main {
             disconnect();
         }
 
-        connection = new netboard.SocketConnection(destination, mode);
+        try {
+            connection = new netboard.SocketConnection(destination, mode);
+        } catch (netboard.SocketConnection.Exception e) {
+            connection = null;
+            netboard.SocketConnection.emergencyDisconnect("Error setting up the connection!");
+        }
     }
     
     static void disconnect() {
@@ -239,7 +244,8 @@ public class Main {
     public static final int CLIENT_MODE = 1;    
     /**
      * Object representing current connection
-     * @see netboard.Main#getConnection()
+     * @see netboard.Main#connect
+     * @see netboard.Main#disconnect
      * @see netboard.SocketConnection
      */
     private static netboard.SocketConnection connection;
