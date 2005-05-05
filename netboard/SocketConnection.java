@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.7 2005/05/02 14:02:29 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.8 2005/05/05 08:56:59 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -53,7 +53,7 @@ public class SocketConnection {
                     throw new java.io.IOException("Unexpected stream content");
                 }
             } catch (java.io.IOException e) {
-                Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
+//                Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                 disconnect();
                 // FIXME: do something more sane...
             } catch (java.lang.ClassNotFoundException e) {
@@ -127,10 +127,11 @@ public class SocketConnection {
     public void disconnect() {
         if (Main.isConnected() == true) {
             try {
+                Main.setConnected(false);                
                 timer.cancel();
                 
                 out.writeInt(PACKET_END);
-                
+                            
                 in.close();
                 in = null;
                 out.close();
@@ -143,10 +144,10 @@ public class SocketConnection {
                     serverSocket = null;
                 }
             } catch (java.io.IOException e) {
-                Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());                
+//                Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());                
+                // FIXME: do some error handling...
             }
             
-            Main.setConnected(false);
             Main.getGUI().setStatus("Disconnected");
         }
     }
@@ -185,7 +186,7 @@ public class SocketConnection {
      * The frequency at which data should be written to the socket and read from it
      * @see netboard.SocketConnection#timer
      */
-    private final int communicationFreq = 500;
+    private final int communicationFreq = 100;
     private final int PACKET_IMG = 0;
     private final int PACKET_END = 1;
     // End of my variables declaration
