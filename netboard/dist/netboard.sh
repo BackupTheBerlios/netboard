@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: netboard.sh,v 1.2 2005/05/02 22:04:55 golish Exp $
+# $Id: netboard.sh,v 1.3 2005/05/06 12:04:31 golish Exp $
 #
 # Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
 #
@@ -18,7 +18,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
 # USA.
-#
 
 if [ "`java -version 2>&1`" != "" ]; then
 	java -jar netboard.jar &
