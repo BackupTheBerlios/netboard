@@ -1,4 +1,4 @@
-rem $Id: netboard.bat,v 1.1 2005/05/06 12:04:31 golish Exp $
+rem $Id: netboard.bat,v 1.2 2005/05/06 12:10:47 golish Exp $
 rem
 rem Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
 rem
@@ -18,4 +18,4 @@ rem Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
 rem USA.
 
 @echo off
-java -jar netboard.jar
+start java -jar netboard.jar
