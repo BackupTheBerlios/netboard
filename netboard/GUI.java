@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.9 2005/05/02 21:35:18 golish Exp $
+ * $Id: GUI.java,v 1.10 2005/05/14 07:54:24 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -26,7 +26,6 @@ package netboard;
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
 public class GUI extends javax.swing.JFrame {
-
     private class PNGFilter extends javax.swing.filechooser.FileFilter {
         public boolean accept(java.io.File file) {
             return file.getName().toLowerCase().endsWith(".png") || file.isDirectory();
@@ -194,7 +193,6 @@ public class GUI extends javax.swing.JFrame {
         drawingPanel.setFocusable(false);
         drawingPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         drawingPanel.setOpaque(false);
-        drawingPanel.setPreferredSize(new java.awt.Dimension(500, 500));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -281,6 +279,14 @@ public class GUI extends javax.swing.JFrame {
                 loadMenuItemActionPerformed(evt);
             }
         });
+        loadMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                loadMenuItemMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                loadMenuItemMouseExited(evt);
+            }
+        });
 
         imageMenu.add(loadMenuItem);
 
@@ -289,6 +295,14 @@ public class GUI extends javax.swing.JFrame {
         saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveMenuItemActionPerformed(evt);
+            }
+        });
+        saveMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                saveMenuItemMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                saveMenuItemMouseExited(evt);
             }
         });
 
@@ -343,6 +357,22 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void saveMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveMenuItemMouseExited
+        restorePreviousStatus();
+    }//GEN-LAST:event_saveMenuItemMouseExited
+
+    private void saveMenuItemMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveMenuItemMouseEntered
+        setStatus("Save the image to file");
+    }//GEN-LAST:event_saveMenuItemMouseEntered
+
+    private void loadMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadMenuItemMouseExited
+        restorePreviousStatus();
+    }//GEN-LAST:event_loadMenuItemMouseExited
+
+    private void loadMenuItemMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loadMenuItemMouseEntered
+        setStatus("Load an image from file");
+    }//GEN-LAST:event_loadMenuItemMouseEntered
 
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         javax.swing.JFileChooser fileChooserDialog = new javax.swing.JFileChooser();
@@ -596,6 +626,14 @@ public class GUI extends javax.swing.JFrame {
                 Main.getAppName() + " - Error!", javax.swing.JOptionPane.ERROR_MESSAGE);
     }
     
+    /**
+     * Shows an informational message
+     * @param message The informational message
+     */
+    public void showInfo(String message) {
+        javax.swing.JOptionPane.showMessageDialog(this, message,
+                Main.getAppName() + " - Notice", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
     private javax.swing.JMenu applicationMenu;
