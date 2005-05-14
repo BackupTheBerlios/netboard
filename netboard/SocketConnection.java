@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.11 2005/05/14 07:50:02 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.12 2005/05/14 07:59:40 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -260,6 +260,9 @@ public class SocketConnection {
      * @see netboard.SocketConnection#timer
      */
     private final int communicationFreq = 100;
+    /**
+     * Timeout to be set for the network connection
+     */
     private final int timeout = 10000;
     /**
      * Indicates if a PACKET_END packet has been received
