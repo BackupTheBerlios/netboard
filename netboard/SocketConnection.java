@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.9 2005/05/05 17:33:08 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.10 2005/05/14 07:47:30 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -30,7 +30,7 @@ public class SocketConnection {
      * Class to be thrown in the constructor when an object cannot be constructed
      * @see netboard.SocketConnection#SocketConnection
      */
-    public class Exception extends java.lang.Exception { }    
+    public static class Exception extends java.lang.Exception { }    
     
     /**
      * Class representing the actions performed by the timer (i.e. reading data from the socket and writing to it)
@@ -38,46 +38,127 @@ public class SocketConnection {
      * @see netboard.SocketConnection#timer
      */
     private class CommunicationTask extends java.util.TimerTask {
+        /**
+         * Performes communication tasks (i.e. sending and receiving data)
+         */
         public void run() {
-            try {
-                netboard.SerializableImage image;                
-                int packetType = PACKET_GREET;
+            if (disconnect == true) {
+                try {
+System.out.println("Disconnecting...");
+                    timer.cancel();
+                    Main.setConnected(false);
 
-                if (firstPacket == true) {
-                    out.writeInt(PACKET_GREET);
-                    firstPacket = false;
-                } else {              
-                    packetType = in.readInt();
-                }     
+                    if (receivedPacketEnd == sentPacketEnd == foundEOF == false) {
+System.out.print("Sending PACKET_END... ");
+                        out.writeInt(PACKET_END);
+                        out.flush();
+System.out.println("sent.");
+                        sentPacketEnd = true;
+System.out.print("Waiting for PACKET_END_ACK... ");
 
-                if (packetType != PACKET_END) {
-                    out.writeInt(PACKET_IMG);                
-                    image = new netboard.SerializableImage(Main.getGUI().getImage());
-                    out.writeObject(image); 
-                    image = null;
+                        while (in.readInt() != PACKET_END_ACK) { } // FIXME: not, fuckin', working ://
+System.out.println("got it.");
+                    }
+
+                    socket.close();
+                } catch (java.io.IOException e) {
+                    if (sentPacketEnd == false) {
+                        Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());
+                    } 
+                    // FIXME: do something more sane...
                 }
 
-                if (packetType == PACKET_GREET) {
-                } else if (packetType == PACKET_IMG) {                    
-                    image = (netboard.SerializableImage)in.readUnshared();                
-                    Main.getGUI().setImage(image.getImage()); 
-                    image = null;                
-                } else if (packetType == PACKET_END) {
-                    receivedPacketEnd = true;
+                Main.getGUI().setStatus("Disconnected (" + 
+                        ((sentPacketEnd == true) ? "on your demand" : "on the other side's demand") + ")");
+            } else {
+System.out.println("Running the reading/writing method...");
+                try {
+                    netboard.SerializableImage image;
+                    int packetType = PACKET_GREET;
+
+                    if (firstPacket == true) {
+System.out.print("Sending PACKET_GREET... ");
+                        out.writeInt(PACKET_GREET);
+System.out.println("sent.");
+                        firstPacket = false;
+                    } else {
+System.out.print("Reading packet type... ");
+                        packetType = in.readInt();
+System.out.println("read: " + packetType);
+                    }
+
+                    if (packetType != PACKET_END && socket.isOutputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
+System.out.print("Sending PACKET_IMG... ");
+                        out.writeInt(PACKET_IMG);
+System.out.println("sent.");
+                        image = new netboard.SerializableImage(Main.getGUI().getImage());
+System.out.print("Sending image... ");
+                        out.writeObject(image);
+                        out.flush();
+System.out.println("sent.");
+                        image = null;
+                    }
+
+                    if (packetType == PACKET_GREET) {
+                    } else if (packetType == PACKET_IMG && socket.isInputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
+                        try {
+System.out.print("Receiving image... ");
+                            image = (netboard.SerializableImage)in.readUnshared();
+System.out.println("received.");
+                            Main.getGUI().setImage(image.getImage());
+                            image = null;
+                        } catch (java.io.OptionalDataException e) {
+System.out.print("Hey, it's not an image! ");
+                            if (e.eof == true) {
+System.out.println("It's an EOF - I will try to disconnect now...");
+                                foundEOF = true;
+                                Main.disconnect();
+                                return;
+                                // FIXME: do something more sane...
+                            } else if (e.length > 0 && in.readInt() == PACKET_END) {
+System.out.print("It's a PACKET_END. ");
+                                receivedPacketEnd = true;
+System.out.print("Sending PACKET_END_ACK... ");
+                                out.writeInt(PACKET_END_ACK);
+System.out.println("sent. I will try to disconnect now...");
+                                Main.disconnect();
+                                return;
+                                // FIXME: do something more sane...
+                            }
+                        }
+                    } else if (packetType == PACKET_END && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
+System.out.println("Hmm, looks like my Significant Other wants me to disconnect. OK, I'll try to do so...");
+                        receivedPacketEnd = true;
+System.out.print("Sending PACKET_END_ACK... ");
+                        out.writeInt(PACKET_END_ACK);
+System.out.println("sent.");
+                        Main.disconnect();
+                        return;
+                    } else if (packetType == PACKET_END_ACK && sentPacketEnd == true) {
+                    } else {
+                        throw new java.io.IOException("Unexpected stream content");
+                    }
+                } catch (java.net.SocketException e) {
+                    if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {
+                        Main.getGUI().showError("Network error: " + e.getMessage());
+                    }
                     Main.disconnect();
-                } else {
-                    throw new java.io.IOException("Unexpected stream content");
+                    return;
+                    // FIXME: do something more sane...
+                } catch (java.io.IOException e) {
+                    if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {                    
+                        Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
+                    }
+                    Main.disconnect();
+                    return;
+                    // FIXME: do something more sane...
+                } catch (java.lang.ClassNotFoundException e) {
+                    // FIXME: do some error handling...
                 }
-            } catch (java.io.IOException e) {
-                Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
-                Main.disconnect();
-                // FIXME: do something more sane...
-            } catch (java.lang.ClassNotFoundException e) {
-                // FIXME: do some error handling...
-            }            
+            }
         }
     }
-    
+
     /**
      * Creates a new instance of SocketConnection and starts the connection thread
      * @see netboard.SocketConnection#disconnect()
@@ -87,16 +168,19 @@ public class SocketConnection {
      * @see netboard.Main#connect()
      * @see netboard.Main#disconnect()
      * @param destination Address of the destination host
-     * @param mode Mode of the connection: 0 - server, 1 - client
+     * @param mode Mode of the connection: <CODE>Main.SERVER_MODE</CODE> - server, <CODE>Main.CLIENT_MODE</CODE> - client
+     * @throws netboard.SocketConnection.Exception When an object cannot be constructed (i.e. the connection cannot be established)
      */
-    public SocketConnection(String destination, int mode) throws netboard.SocketConnection.Exception {        
+    public SocketConnection(String destination, int mode) throws netboard.SocketConnection.Exception {
         if (mode == Main.SERVER_MODE) {
             Main.getGUI().setStatus("Working as a server: waiting for incoming connection...");
-            
+
             try {
                 serverSocket = new java.net.ServerSocket(Main.getPort());
-                socket = serverSocket.accept();                                
-                               
+                socket = serverSocket.accept();
+                socket.setReuseAddress(false);
+                socket.setSoTimeout(timeout);
+
                 out = new java.io.ObjectOutputStream(socket.getOutputStream());
                 in = new java.io.ObjectInputStream(socket.getInputStream());
             } catch (java.io.IOException e) {
@@ -108,15 +192,15 @@ public class SocketConnection {
             Main.getGUI().setStatus("Working as a client: connecting to " + destination + "...");
             
             try {
-                try {
-                    socket = new java.net.Socket(destination, Main.getPort());
-                } catch (java.net.UnknownHostException e) {
-                    Main.getGUI().showError("Unknown host: " + destination);
-                    throw new netboard.SocketConnection.Exception();                    
-                }
+                socket = new java.net.Socket(destination, Main.getPort());
+                socket.setReuseAddress(false);
+                socket.setSoTimeout(timeout);                
                 
                 out = new java.io.ObjectOutputStream(socket.getOutputStream());
                 in = new java.io.ObjectInputStream(socket.getInputStream());        
+            } catch (java.net.UnknownHostException e) {
+                Main.getGUI().showError("Unknown host: " + destination);
+                throw new netboard.SocketConnection.Exception();                    
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " +  e.getMessage());
                 throw new netboard.SocketConnection.Exception();                
@@ -126,15 +210,17 @@ public class SocketConnection {
         
         Main.setConnected(true);        
         Main.getGUI().setStatus("Connected to " + socket.getInetAddress().getHostName());           
-        
-        timer = new java.util.Timer();
+
+        timer = new java.util.Timer("CommunicationThread", false);
         communicationTask = new CommunicationTask();
         
         timer.schedule(communicationTask, 0, communicationFreq);
     }
 
     /**
-     * Disconnects the network connection and makes sure that the application is ready for another connection
+     * Provides that when next communication task is performed, the connection will be closed
+     * @see netboard.SocketConnection#disconnect
+     * @see netboard.SocketConnection.CommunicationTask#run()
      * @see netboard.SocketConnection#SocketConnection
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
@@ -144,31 +230,14 @@ public class SocketConnection {
      */
     public void disconnect() {
         if (Main.isConnected() == true) {
-            try {
-                Main.setConnected(false);                
-                timer.cancel();
-                
-                if (receivedPacketEnd == false) {
-                    out.writeInt(PACKET_END);
-                }
-                            
-                socket.close();
-                out = null;
-                in = null;                
-                socket = null;
-                serverSocket = null;
-            } catch (java.io.IOException e) {
-                Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());                
-                // FIXME: do some error handling...
-            }
-            
-            Main.getGUI().setStatus("Disconnected");
+            disconnect = true;    
         }
     }
     
     /**
      * Sets everything like the connection was disconnected but does not touch the connection itself.
      * Useful for emergency situations - e.g. when an instance of SocketConnection couldn't be created and no connection exists.
+     * @param reason The reason for the emergency disconnection. It is show to the user in the status bar.
      */
     public static void emergencyDisconnect(String reason) {
         Main.setConnected(false);            
@@ -210,17 +279,42 @@ public class SocketConnection {
      * @see netboard.SocketConnection#timer
      */
     private final int communicationFreq = 100;
+    private final int timeout = 10000;
     /**
-     * Indicates if an PACKET_END packet has been received
+     * Indicates if a PACKET_END packet has been received
      */
     private boolean receivedPacketEnd = false;
+    /**
+     * Indicates if a PACKET_END packet has been sent
+     */
+    private boolean sentPacketEnd = false; 
+    /**
+     * Indicates if an EOF has been read from the stream
+     */    
+    private boolean foundEOF = false;
     /**
      * Indicates if current packet will be the first one send in this connection
      */
     private boolean firstPacket = true;
-    
+     /**
+     * Indicates if the connection should be closed when next communication task is performed
+     */
+    private boolean disconnect = false;    
+    /**
+     * Constant representing greeting packet (send upon establishing the connection)
+     */
     private final int PACKET_GREET = 0;
+    /**
+     * Constant representing a control packet send before sending an image
+     */
     private final int PACKET_IMG = 1;
+    /**
+     * Constant representing a packet send before closing the connection
+     */
     private final int PACKET_END = 2;
+    /**
+     * Constant representing a packet send to acknowledge closing of the connection
+     */    
+    private final int PACKET_END_ACK = 3;
     // End of my variables declaration
 }

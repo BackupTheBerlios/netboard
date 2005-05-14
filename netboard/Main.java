@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.8 2005/05/05 17:33:08 golish Exp $
+ * $Id: Main.java,v 1.9 2005/05/14 07:47:30 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -98,16 +98,20 @@ public class Main {
     
     /**
      * Returns the current mode of network operations
-     * @return Current mode of network operations: <CODE>0</CODE> - server, <CODE>1</CODE> - client
+     * @return Current mode of network operations: <CODE>Main.SERVER_MODE</CODE> - server, <CODE>Main.CLIENT_MODE</CODE> - client
      * @see netboard.Main#mode
      * @see netboard.Main#setMode(int)
+     * @see netboard.Main#SERVER_MODE
+     * @see netboard.Main#CLIENT_MODE
      */
     public static int getMode() {
         return mode;
     }
     /**
      * Sets the new mode of network operations
-     * @param m New mode of network operations: <CODE>0</CODE> - server, <CODE>1</CODE> - client
+     * @param m New mode of network operations: <CODE>Main.SERVER_MODE</CODE> - server, <CODE>Main.CLIENT_MODE</CODE> - client
+     * @see netboard.Main#SERVER_MODE
+     * @see netboard.Main#CLIENT_MODE
      * @see netboard.Main#mode
      * @see netboard.Main#getMode()
      */
@@ -130,7 +134,8 @@ public class Main {
      * @return <CODE>true</CODE> if the application is connected to another instance of netboard, <CODE>false</CODE> otherwise
      * @see netboard.Main#connected
      * @see netboard.Main#setConnected(boolean)
-     * @see netboard.SocketConnection#disconnect()
+     * @see netboard.Main#connect()
+     * @see netboard.Main#disconnect()
      */
     public static boolean isConnected() {
         return connected;
@@ -141,7 +146,8 @@ public class Main {
      * @param c Value of the new connection state
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
-     * @see netboard.SocketConnection#disconnect()
+     * @see netboard.Main#connect()
+     * @see netboard.Main#disconnect()
      */
     static void setConnected(boolean c) {
         connected = c;
@@ -165,6 +171,11 @@ public class Main {
         destination = dest;
     }   
     
+    /**
+     * Setup the network connection
+     * @see netboard.Main#connection
+     * @see netboard.Main#disconnect()
+     */
     static void connect() {
         if (connection != null) {
             disconnect();
@@ -178,6 +189,11 @@ public class Main {
         }
     }
     
+    /**
+     * Disconnect current network connection (if any)
+     * @see netboard.Main#connection
+     * @see netboard.Main#connect()
+     */
     static void disconnect() {
         if (connection != null) {
             connection.disconnect();
@@ -235,18 +251,32 @@ public class Main {
      */
     private static int port = 39832;
     /**
-     * Current mode of network operations: 0 - server, 1 - client
+     * Current mode of network operations: <CODE>Main.SERVER_MODE</CODE> - server, <CODE>Main.CLIENT_MODE</CODE> - client
+     * @see netboard.Main#SERVER_MODE
+     * @see netboard.Main#CLIENT_MODE
      * @see netboard.Main#getMode()
      * @see netboard.Main#setMode(int)
      */
     private static int mode;
+    /**
+     * Constant representing server mode of the connection
+     * @see netboard.Main#mode
+     * @see netboard.Main#getMode()
+     * @see netboard.Main#setMode(int)
+     */
     public static final int SERVER_MODE = 0;
+    /**
+     * Constant representing client mode of the connection
+     * @see netboard.Main#mode
+     * @see netboard.Main#getMode()
+     * @see netboard.Main#setMode(int)
+     */
     public static final int CLIENT_MODE = 1;    
     /**
      * Object representing current connection
-     * @see netboard.Main#connect
-     * @see netboard.Main#disconnect
-     * @see netboard.SocketConnection
+     * @see netboard.Main#connect()
+     * @see netboard.Main#disconnect()
+     * @see netboard.SocketConnection#SocketConnection(String, int)
      */
     private static netboard.SocketConnection connection;
     /**
