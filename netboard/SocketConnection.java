@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.10 2005/05/14 07:47:30 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.11 2005/05/14 07:50:02 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -44,20 +44,15 @@ public class SocketConnection {
         public void run() {
             if (disconnect == true) {
                 try {
-System.out.println("Disconnecting...");
                     timer.cancel();
                     Main.setConnected(false);
 
                     if (receivedPacketEnd == sentPacketEnd == foundEOF == false) {
-System.out.print("Sending PACKET_END... ");
                         out.writeInt(PACKET_END);
                         out.flush();
-System.out.println("sent.");
                         sentPacketEnd = true;
-System.out.print("Waiting for PACKET_END_ACK... ");
 
-                        while (in.readInt() != PACKET_END_ACK) { } // FIXME: not, fuckin', working ://
-System.out.println("got it.");
+                        while (in.readInt() != PACKET_END_ACK) { }
                     }
 
                     socket.close();
@@ -71,67 +66,51 @@ System.out.println("got it.");
                 Main.getGUI().setStatus("Disconnected (" + 
                         ((sentPacketEnd == true) ? "on your demand" : "on the other side's demand") + ")");
             } else {
-System.out.println("Running the reading/writing method...");
                 try {
                     netboard.SerializableImage image;
                     int packetType = PACKET_GREET;
 
                     if (firstPacket == true) {
-System.out.print("Sending PACKET_GREET... ");
                         out.writeInt(PACKET_GREET);
-System.out.println("sent.");
                         firstPacket = false;
                     } else {
-System.out.print("Reading packet type... ");
                         packetType = in.readInt();
-System.out.println("read: " + packetType);
                     }
 
                     if (packetType != PACKET_END && socket.isOutputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
-System.out.print("Sending PACKET_IMG... ");
                         out.writeInt(PACKET_IMG);
-System.out.println("sent.");
                         image = new netboard.SerializableImage(Main.getGUI().getImage());
-System.out.print("Sending image... ");
                         out.writeObject(image);
                         out.flush();
-System.out.println("sent.");
                         image = null;
                     }
 
                     if (packetType == PACKET_GREET) {
                     } else if (packetType == PACKET_IMG && socket.isInputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
                         try {
-System.out.print("Receiving image... ");
                             image = (netboard.SerializableImage)in.readUnshared();
-System.out.println("received.");
                             Main.getGUI().setImage(image.getImage());
                             image = null;
                         } catch (java.io.OptionalDataException e) {
-System.out.print("Hey, it's not an image! ");
                             if (e.eof == true) {
-System.out.println("It's an EOF - I will try to disconnect now...");
                                 foundEOF = true;
+                                
                                 Main.disconnect();
                                 return;
                                 // FIXME: do something more sane...
                             } else if (e.length > 0 && in.readInt() == PACKET_END) {
-System.out.print("It's a PACKET_END. ");
                                 receivedPacketEnd = true;
-System.out.print("Sending PACKET_END_ACK... ");
                                 out.writeInt(PACKET_END_ACK);
-System.out.println("sent. I will try to disconnect now...");
+                                
                                 Main.disconnect();
                                 return;
                                 // FIXME: do something more sane...
                             }
                         }
                     } else if (packetType == PACKET_END && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
-System.out.println("Hmm, looks like my Significant Other wants me to disconnect. OK, I'll try to do so...");
                         receivedPacketEnd = true;
-System.out.print("Sending PACKET_END_ACK... ");
                         out.writeInt(PACKET_END_ACK);
-System.out.println("sent.");
+                        
                         Main.disconnect();
                         return;
                     } else if (packetType == PACKET_END_ACK && sentPacketEnd == true) {
@@ -142,6 +121,7 @@ System.out.println("sent.");
                     if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {
                         Main.getGUI().showError("Network error: " + e.getMessage());
                     }
+                    
                     Main.disconnect();
                     return;
                     // FIXME: do something more sane...
@@ -149,6 +129,7 @@ System.out.println("sent.");
                     if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {                    
                         Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                     }
+                    
                     Main.disconnect();
                     return;
                     // FIXME: do something more sane...
