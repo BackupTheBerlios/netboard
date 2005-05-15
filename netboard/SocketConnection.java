@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.12 2005/05/14 07:59:40 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.13 2005/05/15 11:11:12 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -83,6 +83,7 @@ public class SocketConnection {
                         out.writeObject(image);
                         out.flush();
                         image = null;
+                        System.gc();
                     }
 
                     if (packetType == PACKET_GREET) {
@@ -91,6 +92,7 @@ public class SocketConnection {
                             image = (netboard.SerializableImage)in.readUnshared();
                             Main.getGUI().setImage(image.getImage());
                             image = null;
+                            System.gc();
                         } catch (java.io.OptionalDataException e) {
                             if (e.eof == true) {
                                 foundEOF = true;

@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.5 2005/05/02 14:02:29 golish Exp $
+ * $Id: DrawingPanel.java,v 1.6 2005/05/15 11:11:11 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -26,7 +26,6 @@ package netboard;
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
  */
 public class DrawingPanel extends javax.swing.JPanel {
-    
     /** Creates new DrawingPanel form */
     public DrawingPanel() {
         initComponents();
@@ -78,9 +77,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         java.awt.Graphics2D graphics = drawing.createGraphics();
-        graphics.setColor(currentColor);
-        
+
         if (currentTool.equals("Pen")) {
+            graphics.setColor(currentOutlineColor);
             graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
             resetCoords();
         } else if (currentTool.equals("Line")) {
@@ -88,46 +87,45 @@ public class DrawingPanel extends javax.swing.JPanel {
                 lastX = evt.getX();
                 lastY = evt.getY();
                 return;
+            } else {
+                graphics.setColor(currentOutlineColor);
+                graphics.drawLine(evt.getX(), evt.getY(), lastX, lastY);
+                lastX = evt.getX();
+                lastY = evt.getY();
             }
-            
-            graphics.drawLine(evt.getX(), evt.getY(), lastX, lastY);
-            lastX = evt.getX();
-            lastY = evt.getY();
-        } else if (currentTool.equals("Circle")) {
+        } else if (currentTool.equals("Oval")) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
                 return;
+            } else {
+                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
+                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
+            
+                graphics.setColor(currentOutlineColor);
+                graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                graphics.setColor(currentFillColor);                
+                graphics.fillOval(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 2, Math.abs(evt.getY() - lastY) - 2);
+                resetCoords();
             }
-            
-            int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
-            int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
-            
-            graphics.fillOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
-            resetCoords();
         } else if (currentTool.equals("Rectangle")) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
                 return;
+            } else {
+                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
+                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
+            
+                graphics.setColor(currentOutlineColor);
+                graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                graphics.setColor(currentFillColor);                
+                graphics.fillRect(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 1, Math.abs(evt.getY() - lastY) - 1);
+                resetCoords();
             }
-            
-            int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
-            int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
-            
-            graphics.fillRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
-            resetCoords();
         } else if (currentTool.equals("Ereaser")) {
-            if (lastX < 0 || lastY < 0) {
-                lastX = evt.getX();
-                lastY = evt.getY();
-                return;
-            }
-            
             graphics.setColor(java.awt.Color.white);
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
-            lastX = evt.getX();
-            lastY = evt.getY();
         }
         
         graphics.dispose();
@@ -136,7 +134,6 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         java.awt.Graphics2D graphics = drawing.createGraphics();
-        graphics.setColor(currentColor);
         
         if (currentTool.equals("Pen")) {
             if (lastX < 0 || lastY < 0) {
@@ -144,7 +141,8 @@ public class DrawingPanel extends javax.swing.JPanel {
                 lastY = evt.getY();
                 return;
             }
-            
+
+            graphics.setColor(currentOutlineColor);
             graphics.drawLine(lastX, lastY, evt.getX(), evt.getY());
             lastX = evt.getX();
             lastY = evt.getY();
@@ -171,23 +169,42 @@ public class DrawingPanel extends javax.swing.JPanel {
      */
     public void setCurrentTool(String tool) {
         currentTool = tool;
+        resetCoords();
     }
     
     /**
-     * Returns the current color used to draw on the panel
-     * @return Current drawing color
+     * Returns the current color used to draw the outline of the shapes drawn on the panel
+     * @return Current outline drawing color
      */
-    public java.awt.Color getCurrentColor() {
-        return currentColor;
+    public java.awt.Color getCurrentOutlineColor() {
+        return currentOutlineColor;
     }
     
     /**
-     * Sets the current color used to draw on the panel
+     * Returns the current color used to fill the shapes drawn on the panel
+     * @return Current filling color
+     */
+    public java.awt.Color getCurrentFillColor() {
+        return currentFillColor;
+    }    
+    
+    /**
+     * Sets the current color used to draw the outline of the shapes drawn on the panel
      * @param color Color to set the current drawing color to
      */
-    public void setCurrentColor(java.awt.Color color) {
-        currentColor = color;
+    public void setCurrentOutlineColor(java.awt.Color color) {
+        currentOutlineColor = color;
+        resetCoords();
     }
+    
+    /**
+     * Sets the current color used to fill the shapes drawn on the panel
+     * @param color Color to set the current drawing color to
+     */
+    public void setCurrentFillColor(java.awt.Color color) {
+        currentFillColor = color;
+        resetCoords();
+    }    
     
     /**
      * Resets the saved coordinates (<CODE>lastX</CODE> and <CODE>lastY</CODE>) to <CODE>-1</CODE> (i.e. invalidates them)
@@ -217,6 +234,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     public void clearImage() {
         drawing = null;
+        System.gc();
         repaint();
     }
     
@@ -229,9 +247,13 @@ public class DrawingPanel extends javax.swing.JPanel {
      */
     private String currentTool = "Pen";
     /**
-     * Current drawing color
+     * Current outline drawing color
      */
-    private java.awt.Color currentColor = java.awt.Color.black;
+    private java.awt.Color currentOutlineColor = java.awt.Color.black;
+    /**
+     * Current filling color
+     */    
+    private java.awt.Color currentFillColor = java.awt.Color.white;    
     /**
      * Current drawing
      */

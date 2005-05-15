@@ -1,5 +1,5 @@
 /*
- * $Id: SerializableImage.java,v 1.3 2005/04/10 07:44:33 golish Exp $
+ * $Id: SerializableImage.java,v 1.4 2005/05/15 11:11:12 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -28,7 +28,6 @@ package netboard;
  * @see java.io.Serializable
  */
 public class SerializableImage implements java.io.Serializable {
-    
     /**
      * Creates a new instance of SerializableImage
      * @param img The image to serialize

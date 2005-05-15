@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.9 2005/05/14 07:47:30 golish Exp $
+ * $Id: Main.java,v 1.10 2005/05/15 11:11:12 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -28,7 +28,6 @@ package netboard;
  * @version 0.1
  */
 public class Main {
-    
     /**
      * Initializes the application
      */
@@ -235,7 +234,7 @@ public class Main {
      * @see netboard.Main#getVersionWithCodename()
      * @see netboard.Main#getAppName()
      */
-    private static final String version = "0.1";
+    private static final String version = "0.2";
     /**
      * Codename of the current version of this application
      * @see netboard.Main#appName
@@ -244,7 +243,7 @@ public class Main {
      * @see netboard.Main#getVersion()
      * @see netboard.Main#getAppName()
      */
-    private static final String codename = "Die, die, die my darling...";
+    private static final String codename = "Raven and the Rose";
     /**
      * Number of the port used for the netwosk connections
      * @see netboard.Main#getPort()

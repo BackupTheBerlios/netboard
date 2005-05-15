@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.10 2005/05/14 07:54:24 golish Exp $
+ * $Id: GUI.java,v 1.11 2005/05/15 11:11:11 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -54,11 +54,14 @@ public class GUI extends javax.swing.JFrame {
         toolsToolbar = new javax.swing.JToolBar();
         penButton = new javax.swing.JButton();
         lineButton = new javax.swing.JButton();
-        circleButton = new javax.swing.JButton();
+        ovalButton = new javax.swing.JButton();
         rectangleButton = new javax.swing.JButton();
         ereaserButton = new javax.swing.JButton();
         colorChooserPanel = new javax.swing.JPanel();
-        colorChooserButton = new javax.swing.JButton();
+        outlineLabel = new javax.swing.JLabel();
+        outlineColorChooserButton = new javax.swing.JButton();
+        fillLabel = new javax.swing.JLabel();
+        fillColorChooserButton = new javax.swing.JButton();
         statusBar = new javax.swing.JLabel();
         backgroundPanel = new javax.swing.JPanel();
         drawingPanel = new netboard.DrawingPanel();
@@ -115,16 +118,16 @@ public class GUI extends javax.swing.JFrame {
 
         toolsToolbar.add(lineButton);
 
-        circleButton.setText("Circle");
-        circleButton.setMaximumSize(new java.awt.Dimension(75, 27));
-        circleButton.setMinimumSize(new java.awt.Dimension(75, 27));
-        circleButton.addActionListener(new java.awt.event.ActionListener() {
+        ovalButton.setText("Oval");
+        ovalButton.setMaximumSize(new java.awt.Dimension(75, 27));
+        ovalButton.setMinimumSize(new java.awt.Dimension(75, 27));
+        ovalButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                circleButtonActionPerformed(evt);
+                ovalButtonActionPerformed(evt);
             }
         });
 
-        toolsToolbar.add(circleButton);
+        toolsToolbar.add(ovalButton);
 
         rectangleButton.setText("Rectangle");
         rectangleButton.setMaximumSize(new java.awt.Dimension(75, 27));
@@ -150,15 +153,33 @@ public class GUI extends javax.swing.JFrame {
 
         colorChooserPanel.setLayout(null);
 
-        colorChooserButton.setBackground(drawingPanel.getCurrentColor());
-        colorChooserButton.addActionListener(new java.awt.event.ActionListener() {
+        outlineLabel.setText("Outline:");
+        colorChooserPanel.add(outlineLabel);
+        outlineLabel.setBounds(0, 60, 70, 15);
+
+        outlineColorChooserButton.setBackground(drawingPanel.getCurrentOutlineColor());
+        outlineColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                colorChooserButtonActionPerformed(evt);
+                outlineColorChooserButtonActionPerformed(evt);
             }
         });
 
-        colorChooserPanel.add(colorChooserButton);
-        colorChooserButton.setBounds(10, 130, 50, 10);
+        colorChooserPanel.add(outlineColorChooserButton);
+        outlineColorChooserButton.setBounds(10, 80, 50, 10);
+
+        fillLabel.setText("Fill:");
+        colorChooserPanel.add(fillLabel);
+        fillLabel.setBounds(0, 100, 70, 15);
+
+        fillColorChooserButton.setBackground(drawingPanel.getCurrentFillColor());
+        fillColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fillColorChooserButtonActionPerformed(evt);
+            }
+        });
+
+        colorChooserPanel.add(fillColorChooserButton);
+        fillColorChooserButton.setBounds(10, 120, 50, 10);
 
         toolsToolbar.add(colorChooserPanel);
 
@@ -358,6 +379,25 @@ public class GUI extends javax.swing.JFrame {
     }
     // </editor-fold>//GEN-END:initComponents
 
+    private void fillColorChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fillColorChooserButtonActionPerformed
+        colorChooserType = "fill";
+        
+        colorChooserDialog = javax.swing.JColorChooser.createDialog(
+                this, Main.getAppName() + " - Choose a color", true, colorChooser,
+                new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colorChooserOkButtonActionPerformed(evt);
+            }
+        },
+                null
+                );
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                colorChooserDialog.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_fillColorChooserButtonActionPerformed
+
     private void saveMenuItemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveMenuItemMouseExited
         restorePreviousStatus();
     }//GEN-LAST:event_saveMenuItemMouseExited
@@ -375,6 +415,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_loadMenuItemMouseEntered
 
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        restorePreviousStatus();
+        
         javax.swing.JFileChooser fileChooserDialog = new javax.swing.JFileChooser();
         
         fileChooserDialog.setFileFilter(new PNGFilter());
@@ -419,6 +461,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_saveMenuItemActionPerformed
 
     private void loadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadMenuItemActionPerformed
+        restorePreviousStatus();
+                
         javax.swing.JFileChooser fileChooserDialog = new javax.swing.JFileChooser();
 
         fileChooserDialog.setFileFilter(new PNGFilter());        
@@ -448,6 +492,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_clearMenuItemMouseEntered
 
     private void clearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMenuItemActionPerformed
+        restorePreviousStatus();
+        
         drawingPanel.clearImage();
     }//GEN-LAST:event_clearMenuItemActionPerformed
     
@@ -460,6 +506,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_disconnectMenuItemMouseEntered
     
     private void disconnectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_disconnectMenuItemActionPerformed
+        restorePreviousStatus();
+                
         Main.disconnect();
     }//GEN-LAST:event_disconnectMenuItemActionPerformed
     
@@ -472,6 +520,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_connectMenuItemMouseEntered
     
     private void connectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectMenuItemActionPerformed
+        restorePreviousStatus();
+                
         String options[] = {"Server", "Client"};
         Main.setMode(javax.swing.JOptionPane.showOptionDialog(this,
                 "Would you like to be the server or the client of your network connection?",
@@ -505,15 +555,20 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemMouseEntered
     
     private void ereaserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ereaserButtonActionPerformed
+        restorePreviousStatus();
+                
         drawingPanel.setCurrentTool("Ereaser");
-        drawingPanel.resetCoords();
     }//GEN-LAST:event_ereaserButtonActionPerformed
     
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        restorePreviousStatus();
+                
         Main.close();
     }//GEN-LAST:event_exitMenuItemActionPerformed
     
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
+        restorePreviousStatus();
+                
         javax.swing.JOptionPane.showMessageDialog(this, Main.getAppName() + " v. " + Main.getVersionWithCodename() + "\n" +
                 "A drawing board shared by two users over the network\n\n" +
                 "Author: Marcin 'golish' Goliszewski <golish@niente.eu.org>\n\n" +
@@ -534,7 +589,9 @@ public class GUI extends javax.swing.JFrame {
         Main.close();
     }//GEN-LAST:event_formWindowClosing
     
-    private void colorChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorChooserButtonActionPerformed
+    private void outlineColorChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outlineColorChooserButtonActionPerformed
+        colorChooserType = "outline";
+        
         colorChooserDialog = javax.swing.JColorChooser.createDialog(
                 this, Main.getAppName() + " - Choose a color", true, colorChooser,
                 new java.awt.event.ActionListener() {
@@ -549,41 +606,59 @@ public class GUI extends javax.swing.JFrame {
                 colorChooserDialog.setVisible(true);
             }
         });
-    }//GEN-LAST:event_colorChooserButtonActionPerformed
-    
+    }//GEN-LAST:event_outlineColorChooserButtonActionPerformed
+
     private void colorChooserOkButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        changeColor(colorChooser.getColor());
-        drawingPanel.resetCoords();
+        if (colorChooserType.equals("outline")) {
+            changeOutlineColor(colorChooser.getColor());
+        } else if (colorChooserType.equals("fill")) {
+            changeFillColor(colorChooser.getColor());
+        }
+        
+        colorChooserType = "";
     }
     
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
+        restorePreviousStatus();
+        
         drawingPanel.setCurrentTool("Rectangle");
-        drawingPanel.resetCoords();
     }//GEN-LAST:event_rectangleButtonActionPerformed
     
-    private void circleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_circleButtonActionPerformed
-        drawingPanel.setCurrentTool("Circle");
-        drawingPanel.resetCoords();
-    }//GEN-LAST:event_circleButtonActionPerformed
+    private void ovalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ovalButtonActionPerformed
+        restorePreviousStatus();
+        
+        drawingPanel.setCurrentTool("Oval");
+    }//GEN-LAST:event_ovalButtonActionPerformed
     
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
+        restorePreviousStatus();
+        
         drawingPanel.setCurrentTool("Line");
-        drawingPanel.resetCoords();
     }//GEN-LAST:event_lineButtonActionPerformed
     
     private void penButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penButtonActionPerformed
+        restorePreviousStatus();
+                
         drawingPanel.setCurrentTool("Pen");
-        drawingPanel.resetCoords();
     }//GEN-LAST:event_penButtonActionPerformed
     
     /**
-     * Does everything what has to be done after user changes the drawing color
-     * @param color The new drawing color
+     * Does everything that has to be done after user changes the outline drawing color
+     * @param color The new outline drawing color
      */
-    private void changeColor(java.awt.Color color) {
-        drawingPanel.setCurrentColor(color);
-        colorChooserButton.setBackground(drawingPanel.getCurrentColor());
+    private void changeOutlineColor(java.awt.Color color) {
+        drawingPanel.setCurrentOutlineColor(color);
+        outlineColorChooserButton.setBackground(drawingPanel.getCurrentOutlineColor());
     }
+    
+    /**
+     * Does everything that has to be done after user changes the filing color
+     * @param color The new filling color
+     */
+    private void changeFillColor(java.awt.Color color) {
+        drawingPanel.setCurrentFillColor(color);
+        fillColorChooserButton.setBackground(drawingPanel.getCurrentFillColor());
+    }    
     
     /**
      * Returns current image displayed on the drawing panel
@@ -639,22 +714,25 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenu applicationMenu;
     private javax.swing.JSeparator applicationSeparator;
     private javax.swing.JPanel backgroundPanel;
-    private javax.swing.JButton circleButton;
     private javax.swing.JMenuItem clearMenuItem;
     private javax.swing.JColorChooser colorChooser;
-    private javax.swing.JButton colorChooserButton;
     private javax.swing.JPanel colorChooserPanel;
     private javax.swing.JMenuItem connectMenuItem;
     private javax.swing.JMenuItem disconnectMenuItem;
     private netboard.DrawingPanel drawingPanel;
     private javax.swing.JButton ereaserButton;
     private javax.swing.JMenuItem exitMenuItem;
+    private javax.swing.JButton fillColorChooserButton;
+    private javax.swing.JLabel fillLabel;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu imageMenu;
     private javax.swing.JSeparator imageSeparator;
     private javax.swing.JButton lineButton;
     private javax.swing.JMenuItem loadMenuItem;
     private javax.swing.JMenuBar mainMenu;
+    private javax.swing.JButton outlineColorChooserButton;
+    private javax.swing.JLabel outlineLabel;
+    private javax.swing.JButton ovalButton;
     private javax.swing.JButton penButton;
     private javax.swing.JButton rectangleButton;
     private javax.swing.JMenuItem saveMenuItem;
@@ -664,6 +742,7 @@ public class GUI extends javax.swing.JFrame {
     
     // My variables declaration
     private javax.swing.JDialog colorChooserDialog;
+    private String colorChooserType = "";
     /**
      * Text which was previously displayed on the status bar
      */
