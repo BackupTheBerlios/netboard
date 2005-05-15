@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.6 2005/05/15 11:11:11 golish Exp $
+ * $Id: DrawingPanel.java,v 1.7 2005/05/15 11:56:26 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -104,8 +104,12 @@ public class DrawingPanel extends javax.swing.JPanel {
             
                 graphics.setColor(currentOutlineColor);
                 graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
-                graphics.setColor(currentFillColor);                
-                graphics.fillOval(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 2, Math.abs(evt.getY() - lastY) - 2);
+                
+                if (fill == true) {
+                    graphics.setColor(currentFillColor);                
+                    graphics.fillOval(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 2, Math.abs(evt.getY() - lastY) - 2);
+                }
+                
                 resetCoords();
             }
         } else if (currentTool.equals("Rectangle")) {
@@ -119,8 +123,12 @@ public class DrawingPanel extends javax.swing.JPanel {
             
                 graphics.setColor(currentOutlineColor);
                 graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
-                graphics.setColor(currentFillColor);                
-                graphics.fillRect(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 1, Math.abs(evt.getY() - lastY) - 1);
+
+                if (fill == true) {                
+                    graphics.setColor(currentFillColor);                
+                    graphics.fillRect(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 1, Math.abs(evt.getY() - lastY) - 1);
+                }
+                
                 resetCoords();
             }
         } else if (currentTool.equals("Ereaser")) {
@@ -166,6 +174,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Sets the current tool used to draw on the panel
      * @param tool Tool to set the drawing tool to
+     * @see netboard.DrawingPanel#currentTool
      */
     public void setCurrentTool(String tool) {
         currentTool = tool;
@@ -175,6 +184,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Returns the current color used to draw the outline of the shapes drawn on the panel
      * @return Current outline drawing color
+     * @see netboard.DrawingPanel#currentOutlineColor
      */
     public java.awt.Color getCurrentOutlineColor() {
         return currentOutlineColor;
@@ -183,6 +193,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Returns the current color used to fill the shapes drawn on the panel
      * @return Current filling color
+     * @see netboard.DrawingPanel#currentOutlineColor
      */
     public java.awt.Color getCurrentFillColor() {
         return currentFillColor;
@@ -190,7 +201,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     /**
      * Sets the current color used to draw the outline of the shapes drawn on the panel
-     * @param color Color to set the current drawing color to
+     * @param color Color to set the current outline drawing color to
+     * @see netboard.DrawingPanel#currentOutlineColor
      */
     public void setCurrentOutlineColor(java.awt.Color color) {
         currentOutlineColor = color;
@@ -199,7 +211,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     /**
      * Sets the current color used to fill the shapes drawn on the panel
-     * @param color Color to set the current drawing color to
+     * @param color Color to set the current filling color to
+     * @see netboard.DrawingPanel#currentFillColor
      */
     public void setCurrentFillColor(java.awt.Color color) {
         currentFillColor = color;
@@ -208,6 +221,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     /**
      * Resets the saved coordinates (<CODE>lastX</CODE> and <CODE>lastY</CODE>) to <CODE>-1</CODE> (i.e. invalidates them)
+     * @see netboard.DrawingPanel#lastX
+     * @see netboard.DrawingPanel#lastY
      */
     public void resetCoords() {
         lastX = lastY = -1;
@@ -216,6 +231,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Returns the image from the panel
      * @return Image from the panel
+     * @see netboard.DrawingPanel#drawing
      */
     public java.awt.image.BufferedImage getImage() {
         return drawing;
@@ -224,6 +240,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Sets the image on the panel
      * @param image New image to be shown on the panel
+     * @see netboard.DrawingPanel#drawing
      */
     public void setImage(java.awt.image.BufferedImage image) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
@@ -238,33 +255,56 @@ public class DrawingPanel extends javax.swing.JPanel {
         repaint();
     }
     
+    /**
+     * Sets the variable deciding if the shapes should be filled or not
+     * @param f Tells if the shapes should be filled or not
+     * @see netboard.DrawingPanel#fill
+     */
+    public void setFill(boolean f) {
+        fill = f;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     
     // My variables declaration
     /**
      * Current drawing tool
+     * @see netboard.DrawingPanel#setCurrentTool(String)
      */
     private String currentTool = "Pen";
     /**
      * Current outline drawing color
+     * @see netboard.DrawingPanel#setCurrentOutlineColor
+     * @see netboard.DrawingPanel#getCurrentOutlineColor
      */
     private java.awt.Color currentOutlineColor = java.awt.Color.black;
     /**
      * Current filling color
+     * @see netboard.DrawingPanel#setCurrentFillColor
+     * @see netboard.DrawingPanel#getCurrentFillColor
      */    
     private java.awt.Color currentFillColor = java.awt.Color.white;    
     /**
      * Current drawing
+     * @see netboard.DrawingPanel#setImage
+     * @see netboard.DrawingPanel#getImage
      */
     private java.awt.image.BufferedImage drawing = null;
     /**
      * Last used X coordinate; valid if greater than <CODE>0</CODE>
+     * @see netboard.DrawingPanel#resetCoords
      */
     private int lastX = -1;
     /**
      * Last used Y coordinate; valid if greater than <CODE>0</CODE>
+     * @see netboard.DrawingPanel#resetCoords
      */
     private int lastY = -1;
+    /**
+     * Tells if the shapes should be filled or not
+     * @see netboard.DrawingPanel#setFill
+     */
+    private boolean fill = true;
     // End of my variables declaration
 }

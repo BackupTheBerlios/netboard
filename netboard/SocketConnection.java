@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.13 2005/05/15 11:11:12 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.14 2005/05/15 11:56:26 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -261,7 +261,7 @@ public class SocketConnection {
      * The frequency at which data should be written to the socket and read from it
      * @see netboard.SocketConnection#timer
      */
-    private final int communicationFreq = 100;
+    private final int communicationFreq = 500;
     /**
      * Timeout to be set for the network connection
      */
