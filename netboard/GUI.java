@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.12 2005/05/15 11:56:26 golish Exp $
+ * $Id: GUI.java,v 1.13 2005/05/19 15:22:53 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -570,8 +570,6 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemMouseEntered
     
     private void ereaserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ereaserButtonActionPerformed
-        restorePreviousStatus();
-                
         drawingPanel.setCurrentTool("Ereaser");
     }//GEN-LAST:event_ereaserButtonActionPerformed
     
@@ -634,26 +632,18 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
-        restorePreviousStatus();
-        
         drawingPanel.setCurrentTool("Rectangle");
     }//GEN-LAST:event_rectangleButtonActionPerformed
     
     private void ovalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ovalButtonActionPerformed
-        restorePreviousStatus();
-        
         drawingPanel.setCurrentTool("Oval");
     }//GEN-LAST:event_ovalButtonActionPerformed
     
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
-        restorePreviousStatus();
-        
         drawingPanel.setCurrentTool("Line");
     }//GEN-LAST:event_lineButtonActionPerformed
     
     private void penButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penButtonActionPerformed
-        restorePreviousStatus();
-                
         drawingPanel.setCurrentTool("Pen");
     }//GEN-LAST:event_penButtonActionPerformed
     
