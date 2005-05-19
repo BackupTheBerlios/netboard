@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.10 2005/05/15 11:11:12 golish Exp $
+ * $Id: Main.java,v 1.11 2005/05/19 15:52:49 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -87,12 +87,21 @@ public class Main {
     }
     
     /**
-     * Returns number of the port used for the network connections
-     * @return Number of the port used for the network connections
-     * @see netboard.Main#port
+     * Number of the port used for the writing part of the network connection
+     * return Number of the port used for the writing part of the network connection
+     * @see netboard.Main#writingPort
      */
-    public static int getPort() {
-        return port;
+    public static int getWritingPort() {
+        return writingPort;
+    }
+
+    /**
+     * Number of the port used for the reading part of the network connection
+     * return Number of the port used for the reading part of the network connection
+     * @see netboard.Main#readingPort
+     */
+    public static int getReadingPort() {
+        return readingPort;
     }
     
     /**
@@ -245,10 +254,15 @@ public class Main {
      */
     private static final String codename = "Raven and the Rose";
     /**
-     * Number of the port used for the netwosk connections
-     * @see netboard.Main#getPort()
+     * Number of the port used for the writing part of the network connection
+     * @see netboard.Main#getWritingPort()
      */
-    private static int port = 39832;
+    private static final int writingPort = 39831;
+    /**
+     * Number of the port used for the reading part of the network connection
+     * @see netboard.Main#getReadingPort()
+     */    
+    private static final int readingPort = 39832;    
     /**
      * Current mode of network operations: <CODE>Main.SERVER_MODE</CODE> - server, <CODE>Main.CLIENT_MODE</CODE> - client
      * @see netboard.Main#SERVER_MODE

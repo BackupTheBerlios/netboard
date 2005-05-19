@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.14 2005/05/15 11:56:26 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.15 2005/05/19 15:52:49 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -33,29 +33,90 @@ public class SocketConnection {
     public static class Exception extends java.lang.Exception { }    
     
     /**
-     * Class representing the actions performed by the timer (i.e. reading data from the socket and writing to it)
-     * @see netboard.SocketConnection#communicationTask
-     * @see netboard.SocketConnection#timer
+     * Class representing the writing actions performed by the timer
+     * @see netboard.SocketConnection#writingTimer
      */
-    private class CommunicationTask extends java.util.TimerTask {
+    private class WritingTask extends java.util.TimerTask {
         /**
-         * Performes communication tasks (i.e. sending and receiving data)
+         * Performes the writing tasks
          */
         public void run() {
             if (disconnect == true) {
                 try {
-                    timer.cancel();
+                    writingTimer.cancel();
                     Main.setConnected(false);
 
                     if (receivedPacketEnd == sentPacketEnd == foundEOF == false) {
                         out.writeInt(PACKET_END);
                         out.flush();
                         sentPacketEnd = true;
-
-                        while (in.readInt() != PACKET_END_ACK) { }
+                        
+                        while (in.readInt() != PACKET_END_ACK) { }                        
                     }
 
-                    socket.close();
+                    writingSocket.close();
+                } catch (java.io.IOException e) {
+                    if (sentPacketEnd == false) {
+                        Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());
+                    } 
+                    // FIXME: do something more sane...
+                }
+
+                Main.getGUI().setStatus("Disconnected (" + 
+                        ((sentPacketEnd == true) ? "on your demand" : "on the other side's demand") + ")");
+            } else {
+                try {
+                    netboard.SerializableImage image;
+
+                    if (firstPacket == true) {
+                        out.writeInt(PACKET_GREET);
+                        firstPacket = false;
+                    }
+
+                    if (writingSocket.isOutputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {                        
+                        out.writeInt(PACKET_IMG);
+                        image = new netboard.SerializableImage(Main.getGUI().getImage());
+                        out.writeObject(image);
+                        out.flush();
+                        image = null;
+                        System.gc();
+                    }
+                } catch (java.net.SocketException e) {
+                    if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {
+                        Main.getGUI().showError("Network error: " + e.getMessage());
+                    }
+                    
+                    Main.disconnect();
+                    return;
+                    // FIXME: do something more sane...
+                } catch (java.io.IOException e) {
+                    if (sentPacketEnd == receivedPacketEnd == foundEOF == false) {                    
+                        Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
+                    }
+                    
+                    Main.disconnect();
+                    return;
+                    // FIXME: do something more sane...
+                }
+            }
+        }
+    }
+
+    /**
+     * Class representing the reading actions performed by the timer
+     * @see netboard.SocketConnection#readingTimer
+     */
+    private class ReadingTask extends java.util.TimerTask {
+        /**
+         * Performes communication tasks (i.e. sending and receiving data)
+         */
+        public void run() {
+            if (disconnect == true) {
+                try {
+                    readingTimer.cancel();
+                    Main.setConnected(false);
+
+                    readingSocket.close();
                 } catch (java.io.IOException e) {
                     if (sentPacketEnd == false) {
                         Main.getGUI().showError("Error while disconnecting: " +  e.getMessage());
@@ -70,45 +131,16 @@ public class SocketConnection {
                     netboard.SerializableImage image;
                     int packetType = PACKET_GREET;
 
-                    if (firstPacket == true) {
-                        out.writeInt(PACKET_GREET);
-                        firstPacket = false;
-                    } else {
+                    if (firstPacket == false) {                    
                         packetType = in.readInt();
                     }
 
-                    if (packetType != PACKET_END && socket.isOutputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
-                        out.writeInt(PACKET_IMG);
-                        image = new netboard.SerializableImage(Main.getGUI().getImage());
-                        out.writeObject(image);
-                        out.flush();
+                    if (packetType == PACKET_GREET) {
+                    } else if (packetType == PACKET_IMG && readingSocket.isInputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
+                        image = (netboard.SerializableImage)in.readUnshared();
+                        Main.getGUI().setImage(image.getImage());
                         image = null;
                         System.gc();
-                    }
-
-                    if (packetType == PACKET_GREET) {
-                    } else if (packetType == PACKET_IMG && socket.isInputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
-                        try {
-                            image = (netboard.SerializableImage)in.readUnshared();
-                            Main.getGUI().setImage(image.getImage());
-                            image = null;
-                            System.gc();
-                        } catch (java.io.OptionalDataException e) {
-                            if (e.eof == true) {
-                                foundEOF = true;
-                                
-                                Main.disconnect();
-                                return;
-                                // FIXME: do something more sane...
-                            } else if (e.length > 0 && in.readInt() == PACKET_END) {
-                                receivedPacketEnd = true;
-                                out.writeInt(PACKET_END_ACK);
-                                
-                                Main.disconnect();
-                                return;
-                                // FIXME: do something more sane...
-                            }
-                        }
                     } else if (packetType == PACKET_END && foundEOF == sentPacketEnd == receivedPacketEnd == false) {
                         receivedPacketEnd = true;
                         out.writeInt(PACKET_END_ACK);
@@ -140,8 +172,8 @@ public class SocketConnection {
                 }
             }
         }
-    }
-
+    }    
+    
     /**
      * Creates a new instance of SocketConnection and starts the connection thread
      * @see netboard.SocketConnection#disconnect()
@@ -159,13 +191,17 @@ public class SocketConnection {
             Main.getGUI().setStatus("Working as a server: waiting for incoming connection...");
 
             try {
-                serverSocket = new java.net.ServerSocket(Main.getPort());
-                socket = serverSocket.accept();
-                socket.setReuseAddress(false);
-                socket.setSoTimeout(timeout);
+                writingServerSocket = new java.net.ServerSocket(Main.getWritingPort());
+                readingServerSocket = new java.net.ServerSocket(Main.getReadingPort());
+                writingSocket = writingServerSocket.accept();
+                writingSocket.setReuseAddress(false);
+                writingSocket.setSoTimeout(timeout);
+                readingSocket = readingServerSocket.accept();
+                readingSocket.setReuseAddress(false);
+                readingSocket.setSoTimeout(timeout);
 
-                out = new java.io.ObjectOutputStream(socket.getOutputStream());
-                in = new java.io.ObjectInputStream(socket.getInputStream());
+                out = new java.io.ObjectOutputStream(writingSocket.getOutputStream());
+                in = new java.io.ObjectInputStream(readingSocket.getInputStream());
             } catch (java.io.IOException e) {
                 Main.getGUI().showError("Error communicating with peer: " + e.getMessage());
                 throw new netboard.SocketConnection.Exception();
@@ -175,12 +211,15 @@ public class SocketConnection {
             Main.getGUI().setStatus("Working as a client: connecting to " + destination + "...");
             
             try {
-                socket = new java.net.Socket(destination, Main.getPort());
-                socket.setReuseAddress(false);
-                socket.setSoTimeout(timeout);                
+                writingSocket = new java.net.Socket(destination, Main.getReadingPort());
+                readingSocket = new java.net.Socket(destination, Main.getWritingPort());
+                writingSocket.setReuseAddress(false);
+                writingSocket.setSoTimeout(timeout);                
+                readingSocket.setReuseAddress(false);
+                readingSocket.setSoTimeout(timeout);                
                 
-                out = new java.io.ObjectOutputStream(socket.getOutputStream());
-                in = new java.io.ObjectInputStream(socket.getInputStream());        
+                out = new java.io.ObjectOutputStream(writingSocket.getOutputStream());
+                in = new java.io.ObjectInputStream(readingSocket.getInputStream());        
             } catch (java.net.UnknownHostException e) {
                 Main.getGUI().showError("Unknown host: " + destination);
                 throw new netboard.SocketConnection.Exception();                    
@@ -192,18 +231,20 @@ public class SocketConnection {
         }   
         
         Main.setConnected(true);        
-        Main.getGUI().setStatus("Connected to " + socket.getInetAddress().getHostName());           
+        Main.getGUI().setStatus("Connected to " + writingSocket.getInetAddress().getHostName());           
 
-        timer = new java.util.Timer("CommunicationThread", false);
-        communicationTask = new CommunicationTask();
+        writingTimer = new java.util.Timer("WritingThread", false);
+        readingTimer = new java.util.Timer("ReadingThread", false);        
         
-        timer.schedule(communicationTask, 0, communicationFreq);
+        writingTimer.schedule(new WritingTask(), 0, communicationFreq);
+        readingTimer.schedule(new ReadingTask(), 0, communicationFreq);        
     }
 
     /**
      * Provides that when next communication task is performed, the connection will be closed
      * @see netboard.SocketConnection#disconnect
-     * @see netboard.SocketConnection.CommunicationTask#run()
+     * @see netboard.SocketConnection.WritingTask#run()
+     * @see netboard.SocketConnection.ReadingTask#run()
      * @see netboard.SocketConnection#SocketConnection
      * @see netboard.Main#connected
      * @see netboard.Main#isConnected()
@@ -229,13 +270,21 @@ public class SocketConnection {
         
     // My variables declaration
     /**
-     * Object representing the connection socket
+     * Object representing the writing socket
      */
-    private java.net.Socket socket = null;
+    private java.net.Socket writingSocket = null;
     /**
-     * Object representing the listening socket for the server mode
+     * Object representing the reading socket
      */
-    private java.net.ServerSocket serverSocket = null;
+    private java.net.Socket readingSocket = null;    
+    /**
+     * Object representing the socket listening on the writing port (for the server mode)
+     */
+    private java.net.ServerSocket writingServerSocket = null;
+    /**
+     * Object representing the socket listening on the reading port (for the server mode)
+     */
+    private java.net.ServerSocket readingServerSocket = null;    
     /**
      * Object representing the output stream
      */
@@ -245,21 +294,21 @@ public class SocketConnection {
      */
     private java.io.ObjectInputStream in;    
     /**
-     * Timer which handles communication tasks
-     * @see netboard.SocketConnection.CommunicationTask
-     * @see netboard.SocketConnection#communicationTask
+     * Timer which handles writing tasks
+     * @see netboard.SocketConnection.WritingTask
      * @see netboard.SocketConnection#communicationFreq
      */
-    private java.util.Timer timer;
+    private java.util.Timer writingTimer;
     /**
-     * Object representing the tasks which are performed by the timer
-     * @see netboard.SocketConnection.CommunicationTask
-     * @see netboard.SocketConnection#timer
+     * Timer which handles reading tasks
+     * @see netboard.SocketConnection.ReadingTask
+     * @see netboard.SocketConnection#communicationFreq
      */
-    private CommunicationTask communicationTask;
+    private java.util.Timer readingTimer;    
     /**
      * The frequency at which data should be written to the socket and read from it
-     * @see netboard.SocketConnection#timer
+     * @see netboard.SocketConnection#writingTimer
+     * @see netboard.SocketConnection#readingTimer
      */
     private final int communicationFreq = 500;
     /**
