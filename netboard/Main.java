@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.11 2005/05/19 15:52:49 golish Exp $
+ * $Id: Main.java,v 1.12 2005/05/19 16:08:14 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -25,7 +25,7 @@ package netboard;
  * netboard - the main module <br/>
  * netboard is a drawing board which is shared by two users over the network
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
- * @version 0.1
+ * @version 0.2
  */
 public class Main {
     /**
