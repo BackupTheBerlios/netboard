@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.7 2005/05/15 11:56:26 golish Exp $
+ * $Id: DrawingPanel.java,v 1.8 2005/05/19 17:13:34 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -102,8 +102,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                 int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
                 int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
             
-                graphics.setColor(currentOutlineColor);
-                graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                if (outline == true) {
+                    graphics.setColor(currentOutlineColor);
+                    graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                }
                 
                 if (fill == true) {
                     graphics.setColor(currentFillColor);                
@@ -121,8 +123,10 @@ public class DrawingPanel extends javax.swing.JPanel {
                 int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
                 int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
             
-                graphics.setColor(currentOutlineColor);
-                graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                if (outline == true) {
+                    graphics.setColor(currentOutlineColor);
+                    graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
+                }
 
                 if (fill == true) {                
                     graphics.setColor(currentFillColor);                
@@ -264,6 +268,33 @@ public class DrawingPanel extends javax.swing.JPanel {
         fill = f;
     }
     
+    /**
+     * Returns the variable deciding if the shapes should be filled or not
+     * @return Tells if the shapes should be filled or not
+     * @see netboard.DrawingPanel#fill
+     */
+    public boolean getFill() {
+        return fill;
+    }    
+    
+    /**
+     * Sets the variable deciding if the shapes should be drawn with or without outline
+     * @param o Tells if the shapes should be drawn with or without outline
+     * @see netboard.DrawingPanel#outline
+     */
+    public void setOutline(boolean o) {
+        outline = o;
+    }    
+    
+    /**
+     * Returns the variable deciding if the shapes should be drawn with or without outline
+     * @return Tells if the shapes should be drawn with or without outline
+     * @see netboard.DrawingPanel#outline
+     */
+    public boolean getOutline() {
+        return outline;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     
@@ -306,5 +337,10 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#setFill
      */
     private boolean fill = true;
+    /**
+     * Tells if the shapes should be drawn with or without outline
+     * @see netboard.DrawingPanel#setOutline
+     */    
+    private boolean outline = true;    
     // End of my variables declaration
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.13 2005/05/19 15:22:53 golish Exp $
+ * $Id: GUI.java,v 1.14 2005/05/19 17:13:35 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -63,6 +63,7 @@ public class GUI extends javax.swing.JFrame {
         fillLabel = new javax.swing.JLabel();
         fillColorChooserButton = new javax.swing.JButton();
         fillCheckBox = new javax.swing.JCheckBox();
+        outlineCheckBox = new javax.swing.JCheckBox();
         statusBar = new javax.swing.JLabel();
         backgroundPanel = new javax.swing.JPanel();
         drawingPanel = new netboard.DrawingPanel();
@@ -156,7 +157,7 @@ public class GUI extends javax.swing.JFrame {
 
         outlineLabel.setText("Outline:");
         colorChooserPanel.add(outlineLabel);
-        outlineLabel.setBounds(0, 50, 70, 15);
+        outlineLabel.setBounds(0, 60, 70, 15);
 
         outlineColorChooserButton.setBackground(drawingPanel.getCurrentOutlineColor());
         outlineColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -166,7 +167,7 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(outlineColorChooserButton);
-        outlineColorChooserButton.setBounds(10, 80, 50, 10);
+        outlineColorChooserButton.setBounds(0, 80, 50, 10);
 
         fillLabel.setText("Fill:");
         colorChooserPanel.add(fillLabel);
@@ -180,9 +181,9 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(fillColorChooserButton);
-        fillColorChooserButton.setBounds(10, 130, 50, 10);
+        fillColorChooserButton.setBounds(0, 120, 50, 10);
 
-        fillCheckBox.setSelected(true);
+        fillCheckBox.setSelected(drawingPanel.getFill());
         fillCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fillCheckBoxActionPerformed(evt);
@@ -190,7 +191,17 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(fillCheckBox);
-        fillCheckBox.setBounds(30, 100, 98, 23);
+        fillCheckBox.setBounds(50, 110, 98, 23);
+
+        outlineCheckBox.setSelected(drawingPanel.getOutline());
+        outlineCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outlineCheckBoxActionPerformed(evt);
+            }
+        });
+
+        colorChooserPanel.add(outlineCheckBox);
+        outlineCheckBox.setBounds(50, 70, 98, 23);
 
         toolsToolbar.add(colorChooserPanel);
 
@@ -214,24 +225,18 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
         getContentPane().add(statusBar, gridBagConstraints);
 
-        backgroundPanel.setLayout(new java.awt.GridBagLayout());
+        backgroundPanel.setLayout(new java.awt.GridLayout(1, 1));
 
         backgroundPanel.setBackground(java.awt.Color.white);
         backgroundPanel.setFocusable(false);
-        backgroundPanel.setMinimumSize(new java.awt.Dimension(500, 500));
-        backgroundPanel.setPreferredSize(new java.awt.Dimension(500, 500));
-        drawingPanel.setLayout(new java.awt.BorderLayout());
-
+        backgroundPanel.setMaximumSize(new java.awt.Dimension(400, 400));
+        backgroundPanel.setMinimumSize(new java.awt.Dimension(400, 400));
+        backgroundPanel.setPreferredSize(new java.awt.Dimension(400, 400));
         drawingPanel.setFocusable(false);
-        drawingPanel.setMinimumSize(new java.awt.Dimension(500, 500));
+        drawingPanel.setMinimumSize(new java.awt.Dimension(400, 400));
         drawingPanel.setOpaque(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        backgroundPanel.add(drawingPanel, gridBagConstraints);
+        drawingPanel.setPreferredSize(new java.awt.Dimension(400, 400));
+        backgroundPanel.add(drawingPanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -389,6 +394,10 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void outlineCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outlineCheckBoxActionPerformed
+        drawingPanel.setOutline(outlineCheckBox.isSelected());
+    }//GEN-LAST:event_outlineCheckBoxActionPerformed
 
     private void fillCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fillCheckBoxActionPerformed
         drawingPanel.setFill(fillCheckBox.isSelected());
@@ -736,6 +745,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton lineButton;
     private javax.swing.JMenuItem loadMenuItem;
     private javax.swing.JMenuBar mainMenu;
+    private javax.swing.JCheckBox outlineCheckBox;
     private javax.swing.JButton outlineColorChooserButton;
     private javax.swing.JLabel outlineLabel;
     private javax.swing.JButton ovalButton;
