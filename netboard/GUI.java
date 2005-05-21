@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.15 2005/05/21 14:41:27 golish Exp $
+ * $Id: GUI.java,v 1.16 2005/05/21 14:48:35 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -39,6 +39,7 @@ public class GUI extends javax.swing.JFrame {
     /** Creates new GUI form */
     public GUI() {
         initComponents();
+        setSize(new java.awt.Dimension(600, 500));
     }
     
     /** This method is called from within the constructor to
