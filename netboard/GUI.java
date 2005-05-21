@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.14 2005/05/19 17:13:35 golish Exp $
+ * $Id: GUI.java,v 1.15 2005/05/21 14:41:27 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -67,6 +67,7 @@ public class GUI extends javax.swing.JFrame {
         statusBar = new javax.swing.JLabel();
         backgroundPanel = new javax.swing.JPanel();
         drawingPanel = new netboard.DrawingPanel();
+        coordsLabel = new javax.swing.JLabel();
         mainMenu = new javax.swing.JMenuBar();
         applicationMenu = new javax.swing.JMenu();
         connectMenuItem = new javax.swing.JMenuItem();
@@ -233,9 +234,9 @@ public class GUI extends javax.swing.JFrame {
         backgroundPanel.setMinimumSize(new java.awt.Dimension(400, 400));
         backgroundPanel.setPreferredSize(new java.awt.Dimension(400, 400));
         drawingPanel.setFocusable(false);
+        drawingPanel.setMaximumSize(new java.awt.Dimension(400, 400));
         drawingPanel.setMinimumSize(new java.awt.Dimension(400, 400));
         drawingPanel.setOpaque(false);
-        drawingPanel.setPreferredSize(new java.awt.Dimension(400, 400));
         backgroundPanel.add(drawingPanel);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -246,6 +247,14 @@ public class GUI extends javax.swing.JFrame {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         getContentPane().add(backgroundPanel, gridBagConstraints);
+
+        coordsLabel.setText("0,0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        getContentPane().add(coordsLabel, gridBagConstraints);
 
         applicationMenu.setMnemonic('A');
         applicationMenu.setText("Application");
@@ -707,6 +716,13 @@ public class GUI extends javax.swing.JFrame {
     }
     
     /**
+     * Sets the coordinates displayed on the coodinates label.
+     */
+    public void setCoords(int x, int y) {
+        coordsLabel.setText(x + "," + y);
+    }
+    
+    /**
      * Shows an error message
      * @param message The error message
      */
@@ -732,6 +748,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JColorChooser colorChooser;
     private javax.swing.JPanel colorChooserPanel;
     private javax.swing.JMenuItem connectMenuItem;
+    private javax.swing.JLabel coordsLabel;
     private javax.swing.JMenuItem disconnectMenuItem;
     private netboard.DrawingPanel drawingPanel;
     private javax.swing.JButton ereaserButton;

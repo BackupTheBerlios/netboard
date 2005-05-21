@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.8 2005/05/19 17:13:34 golish Exp $
+ * $Id: DrawingPanel.java,v 1.9 2005/05/21 14:41:27 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -46,15 +46,33 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 formMouseDragged(evt);
             }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                formMouseMoved(evt);
+            }
         });
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
         });
 
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        if (evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+            lastButton = 1;
+        } else if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+            lastButton = 3;
+        }
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
+        Main.getGUI().setCoords(evt.getX(), evt.getY());
+    }//GEN-LAST:event_formMouseMoved
     
     protected void paintComponent(java.awt.Graphics g) {
         if (drawing == null)
@@ -77,9 +95,14 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         java.awt.Graphics2D graphics = drawing.createGraphics();
-
+        
         if (currentTool.equals("Pen")) {
-            graphics.setColor(currentOutlineColor);
+            if (lastButton == 1) {
+                graphics.setColor(currentOutlineColor);
+            } else if (lastButton == 3) {
+                graphics.setColor(currentFillColor);
+            }
+            
             graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
             resetCoords();
         } else if (currentTool.equals("Line")) {
@@ -136,7 +159,12 @@ public class DrawingPanel extends javax.swing.JPanel {
                 resetCoords();
             }
         } else if (currentTool.equals("Ereaser")) {
-            graphics.setColor(java.awt.Color.white);
+            if (lastButton == 1) {
+                graphics.setColor(java.awt.Color.white);
+            } else if (lastButton == 3) {
+                graphics.setColor(currentFillColor);
+            }
+            
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
         }
         
@@ -145,6 +173,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseClicked
     
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        Main.getGUI().setCoords(evt.getX(), evt.getY());
+        
         java.awt.Graphics2D graphics = drawing.createGraphics();
         
         if (currentTool.equals("Pen")) {
@@ -154,7 +184,12 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
 
-            graphics.setColor(currentOutlineColor);
+            if (lastButton == 1) {
+                graphics.setColor(currentOutlineColor);
+            } else if (lastButton == 3) {
+                graphics.setColor(currentFillColor);
+            }            
+
             graphics.drawLine(lastX, lastY, evt.getX(), evt.getY());
             lastX = evt.getX();
             lastY = evt.getY();
@@ -165,7 +200,12 @@ public class DrawingPanel extends javax.swing.JPanel {
                 return;
             }
             
-            graphics.setColor(java.awt.Color.white);
+            if (lastButton == 1) {
+                graphics.setColor(java.awt.Color.white);
+            } else if (lastButton == 3) {
+                graphics.setColor(currentFillColor);
+            }            
+
             graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
@@ -332,6 +372,10 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#resetCoords
      */
     private int lastY = -1;
+    /**
+     * Last pressed button number. Used to determine the color of drawn lines, ereaser filling etc.
+     */
+    private int lastButton = 1;
     /**
      * Tells if the shapes should be filled or not
      * @see netboard.DrawingPanel#setFill
