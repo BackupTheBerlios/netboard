@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.9 2005/05/21 14:41:27 golish Exp $
+ * $Id: DrawingPanel.java,v 1.10 2005/05/27 13:19:33 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -293,6 +293,10 @@ public class DrawingPanel extends javax.swing.JPanel {
         repaint();
     }
     
+    /**
+     * Clears the current image (i.e. makes it completely empty)
+     * @see netboard.DrawingPanel#image
+     */
     public void clearImage() {
         drawing = null;
         System.gc();
@@ -379,11 +383,13 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Tells if the shapes should be filled or not
      * @see netboard.DrawingPanel#setFill
+     * @see netboard.DrawingPanel#getFill
      */
     private boolean fill = true;
     /**
      * Tells if the shapes should be drawn with or without outline
      * @see netboard.DrawingPanel#setOutline
+     * @see netbonetboard.DrawingPanel#getOutline
      */    
     private boolean outline = true;    
     // End of my variables declaration

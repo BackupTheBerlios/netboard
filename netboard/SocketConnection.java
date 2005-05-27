@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.15 2005/05/19 15:52:49 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.16 2005/05/27 13:19:33 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -233,8 +233,8 @@ public class SocketConnection {
         Main.setConnected(true);        
         Main.getGUI().setStatus("Connected to " + writingSocket.getInetAddress().getHostName());           
 
-        writingTimer = new java.util.Timer("WritingThread", false);
-        readingTimer = new java.util.Timer("ReadingThread", false);        
+        writingTimer = new java.util.Timer("WritingThread", true);
+        readingTimer = new java.util.Timer("ReadingThread", true);        
         
         writingTimer.schedule(new WritingTask(), 0, communicationFreq);
         readingTimer.schedule(new ReadingTask(), 0, communicationFreq);        
@@ -314,7 +314,7 @@ public class SocketConnection {
     /**
      * Timeout to be set for the network connection
      */
-    private final int timeout = 10000;
+    private final int timeout = 50000;
     /**
      * Indicates if a PACKET_END packet has been received
      */
