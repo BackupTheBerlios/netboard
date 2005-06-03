@@ -1,5 +1,5 @@
 /*
- * $Id: SocketConnection.java,v 1.16 2005/05/27 13:19:33 golish Exp $ 
+ * $Id: SocketConnection.java,v 1.17 2005/06/03 21:47:15 golish Exp $ 
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -76,7 +76,7 @@ public class SocketConnection {
                     if (writingSocket.isOutputShutdown() == false && foundEOF == sentPacketEnd == receivedPacketEnd == false) {                        
                         out.writeInt(PACKET_IMG);
                         image = new netboard.SerializableImage(Main.getGUI().getImage());
-                        out.writeObject(image);
+                        out.writeUnshared(image);
                         out.flush();
                         image = null;
                         System.gc();

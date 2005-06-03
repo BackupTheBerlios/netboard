@@ -1,5 +1,5 @@
 /*
- * $Id: Main.java,v 1.12 2005/05/19 16:08:14 golish Exp $
+ * $Id: Main.java,v 1.13 2005/06/03 21:47:15 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -25,7 +25,7 @@ package netboard;
  * netboard - the main module <br/>
  * netboard is a drawing board which is shared by two users over the network
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
- * @version 0.2
+ * @version 0.3
  */
 public class Main {
     /**
@@ -243,7 +243,7 @@ public class Main {
      * @see netboard.Main#getVersionWithCodename()
      * @see netboard.Main#getAppName()
      */
-    private static final String version = "0.2";
+    private static final String version = "0.3";
     /**
      * Codename of the current version of this application
      * @see netboard.Main#appName
@@ -252,7 +252,7 @@ public class Main {
      * @see netboard.Main#getVersion()
      * @see netboard.Main#getAppName()
      */
-    private static final String codename = "Raven and the Rose";
+    private static final String codename = "My Friend of Misery";
     /**
      * Number of the port used for the writing part of the network connection
      * @see netboard.Main#getWritingPort()
