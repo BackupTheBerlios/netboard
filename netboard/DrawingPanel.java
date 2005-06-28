@@ -1,7 +1,8 @@
 /*
- * $Id: DrawingPanel.java,v 1.11 2005/05/29 09:14:57 golish Exp $
+ * $Id: DrawingPanel.java,v 1.12 2005/06/28 10:09:57 schylek Exp $
  *
- * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
+ * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
+ *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,6 +25,7 @@ package netboard;
 /**
  * A derivative of <CODE>javax.swing.JPanel</CODE> implementing drawing board capabilities
  * @author <a href="mailto:golish@niente.eu.org">Marcin 'golish' Goliszewski</a>
+ * @author <a href="mailto:schylek@aster.pl">Slawomir 'schylek' Chylek</a>
  */
 public class DrawingPanel extends javax.swing.JPanel {
     /** Creates new DrawingPanel form */
@@ -57,19 +59,77 @@ public class DrawingPanel extends javax.swing.JPanel {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 formMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                formMouseReleased(evt);
+            }
         });
 
     }
     // </editor-fold>//GEN-END:initComponents
 
+    private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
+        java.awt.Graphics2D graphics = drawing.createGraphics();
+        if (currentTool.equals("Line") && lastX >= 0 && lastY >= 0) {
+            if(evt.getButton() == java.awt.event.MouseEvent.BUTTON3)
+                return; 
+            graphics.setColor(currentOutlineColor);
+            graphics.drawLine(evt.getX(), evt.getY(), lastX, lastY);
+        }
+        if (currentTool.equals("Oval") && lastX >= 0 && lastY >= 0){
+                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
+                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
+            
+                if (fill == true) {
+                    graphics.setColor(currentFillColor);                
+                    graphics.fillOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
+                }
+                
+                if (outline == true) {
+                    graphics.setColor(currentOutlineColor);
+                    graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                }
+        }
+        if (currentTool.equals("Rectangle") && lastX >= 0 && lastY >= 0){
+                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
+                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
+            
+                if (fill == true) {
+                    graphics.setColor(currentFillColor);                
+                    graphics.fillRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
+                }
+                
+                if (outline == true) {
+                    graphics.setColor(currentOutlineColor);
+                    graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
+                }
+                
+        }
+        if(getCursor().getType()!=java.awt.Cursor.DEFAULT_CURSOR){
+                java.awt.Cursor normalCursor = new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR);
+                setCursor(normalCursor);
+        }
+        repaint();
+        resetCoords();
+    }//GEN-LAST:event_formMouseReleased
+
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        java.awt.Cursor moveCursor = new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR);
+                setCursor(moveCursor);
+        if ((currentTool.equals("Line") || currentTool.equals("Oval") || currentTool.equals("Rectangle") )
+                    && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+                lastX = evt.getX();
+                lastY = evt.getY();        
+                return;
+            }
+        
+        
         if (evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
             lastButton = 1;
         } else if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
             lastButton = 3;
         }
     }//GEN-LAST:event_formMousePressed
-
+    
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         Main.getGUI().setCoords(evt.getX(), evt.getY());
     }//GEN-LAST:event_formMouseMoved
@@ -105,58 +165,17 @@ public class DrawingPanel extends javax.swing.JPanel {
             
             graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
             resetCoords();
-        } else if (currentTool.equals("Line")) {
+        } else if (currentTool.equals("Line") && evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
                 return;
+            
             } else {
                 graphics.setColor(currentOutlineColor);
                 graphics.drawLine(evt.getX(), evt.getY(), lastX, lastY);
                 lastX = evt.getX();
                 lastY = evt.getY();
-            }
-        } else if (currentTool.equals("Oval")) {
-            if (lastX < 0 || lastY < 0) {
-                lastX = evt.getX();
-                lastY = evt.getY();
-                return;
-            } else {
-                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
-                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
-            
-                if (outline == true) {
-                    graphics.setColor(currentOutlineColor);
-                    graphics.drawOval(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));                
-                }
-                
-                if (fill == true) {
-                    graphics.setColor(currentFillColor);                
-                    graphics.fillOval(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 2, Math.abs(evt.getY() - lastY) - 2);
-                }
-                
-                resetCoords();
-            }
-        } else if (currentTool.equals("Rectangle")) {
-            if (lastX < 0 || lastY < 0) {
-                lastX = evt.getX();
-                lastY = evt.getY();
-                return;
-            } else {
-                int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
-                int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
-            
-                if (outline == true) {
-                    graphics.setColor(currentOutlineColor);
-                    graphics.drawRect(x, y, Math.abs(evt.getX() - lastX), Math.abs(evt.getY() - lastY));
-                }
-
-                if (fill == true) {                
-                    graphics.setColor(currentFillColor);                
-                    graphics.fillRect(x + 1, y + 1, Math.abs(evt.getX() - lastX) - 1, Math.abs(evt.getY() - lastY) - 1);
-                }
-                
-                resetCoords();
             }
         } else if (currentTool.equals("Ereaser")) {
             if (lastButton == 1) {
@@ -165,7 +184,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 graphics.setColor(currentFillColor);
             }
             
-            graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
+            graphics.fillRect(evt.getX()-12, evt.getY()-12, 25, 25);
         }
         
         graphics.dispose();
@@ -206,7 +225,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 graphics.setColor(currentFillColor);
             }            
 
-            graphics.fillRect(evt.getX(), evt.getY(), 25, 25);
+            graphics.fillRect(evt.getX()-12, evt.getY()-12, 25, 25);
             lastX = evt.getX();
             lastY = evt.getY();
         }
@@ -391,6 +410,8 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#setOutline
      * @see netboard.DrawingPanel#getOutline
      */    
-    private boolean outline = true;    
+    private boolean outline = true;
+    
     // End of my variables declaration
+
 }
