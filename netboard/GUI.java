@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.16 2005/05/21 14:48:35 golish Exp $
+ * $Id: GUI.java,v 1.17 2005/06/28 10:40:24 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -603,7 +603,9 @@ public class GUI extends javax.swing.JFrame {
                 
         javax.swing.JOptionPane.showMessageDialog(this, Main.getAppName() + " v. " + Main.getVersionWithCodename() + "\n" +
                 "A drawing board shared by two users over the network\n\n" +
-                "Author: Marcin 'golish' Goliszewski <golish@niente.eu.org>\n\n" +
+                "Authors: \n" +
+                "Marcin 'golish' Goliszewski <golish@niente.eu.org>,\n" +
+                "Slawomir 'schylek' Chylek <schylek@aster.pl>\n\n" +
                 "This program is free software; you can redistribute it and/or\n" +
                 "modify it under the terms of the GNU General Public License\n" +
                 "as published by the Free Software Foundation; either version 2\n" +
