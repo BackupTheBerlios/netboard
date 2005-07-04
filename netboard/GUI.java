@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.18 2005/07/04 16:59:52 schylek Exp $
+ * $Id: GUI.java,v 1.19 2005/07/04 17:42:47 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -159,7 +159,7 @@ public class GUI extends javax.swing.JFrame {
 
         outlineLabel.setText("Outline:");
         colorChooserPanel.add(outlineLabel);
-        outlineLabel.setBounds(0, 60, 70, 14);
+        outlineLabel.setBounds(0, 60, 70, 15);
 
         outlineColorChooserButton.setBackground(drawingPanel.getCurrentOutlineColor());
         outlineColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -169,11 +169,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(outlineColorChooserButton);
-        outlineColorChooserButton.setBounds(0, 80, 50, 9);
+        outlineColorChooserButton.setBounds(0, 80, 50, 10);
 
         fillLabel.setText("Fill:");
         colorChooserPanel.add(fillLabel);
-        fillLabel.setBounds(0, 100, 30, 14);
+        fillLabel.setBounds(0, 100, 30, 15);
 
         fillColorChooserButton.setBackground(drawingPanel.getCurrentFillColor());
         fillColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -183,7 +183,7 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(fillColorChooserButton);
-        fillColorChooserButton.setBounds(0, 120, 50, 9);
+        fillColorChooserButton.setBounds(0, 120, 50, 10);
 
         fillCheckBox.setSelected(drawingPanel.getFill());
         fillCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -589,7 +589,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemMouseEntered
     
     private void ereaserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ereaserButtonActionPerformed
-        drawingPanel.setCurrentTool("Ereaser");
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
     }//GEN-LAST:event_ereaserButtonActionPerformed
     
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
@@ -653,19 +653,19 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
-        drawingPanel.setCurrentTool("Rectangle");
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
     }//GEN-LAST:event_rectangleButtonActionPerformed
     
     private void ovalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ovalButtonActionPerformed
-        drawingPanel.setCurrentTool("Oval");
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
     }//GEN-LAST:event_ovalButtonActionPerformed
     
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
-        drawingPanel.setCurrentTool("Line");
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
     }//GEN-LAST:event_lineButtonActionPerformed
     
     private void penButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penButtonActionPerformed
-        drawingPanel.setCurrentTool("Pen");
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
     }//GEN-LAST:event_penButtonActionPerformed
     
     /**

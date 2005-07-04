@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.13 2005/07/04 16:59:52 schylek Exp $
+ * $Id: DrawingPanel.java,v 1.14 2005/07/04 17:42:47 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -69,11 +69,11 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         resetXorCoords();
-        if (currentTool.equals("Line") && lastX >= 0 && lastY >= 0) {
+        if (currentTool == LINE_TOOL && lastX >= 0 && lastY >= 0) {
             currentColor = currentOutlineColor;
             drawLine(evt.getX(), evt.getY(), lastX, lastY);
             
-            if(evt.getButton() == java.awt.event.MouseEvent.BUTTON3 && brokenLine==true ){
+            if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3 && brokenLine==true) {
                 lastX = evt.getX();
                 lastY = evt.getY();
             }
@@ -82,15 +82,15 @@ public class DrawingPanel extends javax.swing.JPanel {
         int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
         int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
         
-        if (currentTool.equals("Oval") && lastX >= 0 && lastY >= 0){
-                drawOval( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
+        if (currentTool == OVAL_TOOL && lastX >= 0 && lastY >= 0){
+            drawOval( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
         }
-        if (currentTool.equals("Rectangle") && lastX >= 0 && lastY >= 0){
-                drawRect( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
+        if (currentTool == RECT_TOOL && lastX >= 0 && lastY >= 0){
+            drawRect( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
         }
         if(getCursor().getType()!=java.awt.Cursor.DEFAULT_CURSOR && brokenLine==false){
-                java.awt.Cursor normalCursor = new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR);
-                setCursor(normalCursor);
+            java.awt.Cursor normalCursor = new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR);
+            setCursor(normalCursor);
         }
         repaint();
         if(brokenLine==false)
@@ -99,9 +99,10 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
         java.awt.Cursor moveCursor = new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR);
-                setCursor(moveCursor);
-        if ((currentTool.equals("Line") || currentTool.equals("Oval") || currentTool.equals("Rectangle") )
-                    && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
+        setCursor(moveCursor);
+        
+        if ((currentTool == LINE_TOOL || currentTool == OVAL_TOOL || currentTool == RECT_TOOL)
+            && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
             if(brokenLine==false){
                 lastX = evt.getX();
                 lastY = evt.getY();
@@ -118,8 +119,8 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
         Main.getGUI().setCoords(evt.getX(), evt.getY());
-        if(currentTool.equals("Line") && brokenLine==true){
-            if(lastXorX != -1 && lastXorY != -1){
+        if(currentTool == LINE_TOOL && brokenLine==true) {
+            if(lastXorX != -1 && lastXorY != -1) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -128,7 +129,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = evt.getX();
             lastXorY = evt.getY();            
             repaint();
-        }else if (!currentTool.equals("Line") && brokenLine==true){
+        } else if (currentTool != LINE_TOOL && brokenLine==true) {
             brokenLine=false;
             drawXorLine(lastXorX, lastXorY, lastX, lastY);
             repaint();
@@ -161,7 +162,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         
-        if (currentTool.equals("Pen")) {
+        if (currentTool == PEN_TOOL) {
             if (lastButton == 1) {
                 currentColor=currentOutlineColor;
             } else if (lastButton == 3) {
@@ -171,7 +172,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastY = evt.getY();
             drawLine(evt.getX(), evt.getY(), lastX, lastY);
             resetCoords();
-        } else if (currentTool.equals("Line") && evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+        } else if (currentTool == LINE_TOOL && evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
@@ -179,9 +180,9 @@ public class DrawingPanel extends javax.swing.JPanel {
                 java.awt.Cursor moveCursor = new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR);
                 setCursor(moveCursor);            
             }
-        } else if (currentTool.equals("Line") && brokenLine == true) {
+        } else if (currentTool == LINE_TOOL && brokenLine == true) {
             drawLine(evt.getX(), evt.getY(), lastX, lastY);           
-        }else if (currentTool.equals("Ereaser")) {
+        }else if (currentTool == EREASER_TOOL) {
             if (lastButton == 1) {
                 currentColor = java.awt.Color.white;
             } else if (lastButton == 3) {
@@ -195,7 +196,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         Main.getGUI().setCoords(evt.getX(), evt.getY());
         
-        if (currentTool.equals("Pen")) {
+        if (currentTool == PEN_TOOL) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
@@ -210,7 +211,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastX = evt.getX();
             lastY = evt.getY();
             repaint();
-        } else if (currentTool.equals("Ereaser")) {
+        } else if (currentTool == EREASER_TOOL) {
             if (lastX < 0 || lastY < 0) {
                 lastX = evt.getX();
                 lastY = evt.getY();
@@ -227,12 +228,12 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastX = evt.getX();
             lastY = evt.getY();
             repaint();
-        } else if (currentTool.equals("Rectangle")) {
+        } else if (currentTool == RECT_TOOL) {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
-            if(lastXorX != -1 && lastXorY != -1){
-                if(lastXorW != 0 && lastXorH != 0){
+            if (lastXorX != -1 && lastXorY != -1) {
+                if (lastXorW != 0 && lastXorH != 0) {
                     drawXorRect(lastXorX, lastXorY, lastXorW, lastXorH);
                 }
                 
@@ -244,7 +245,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = x;
             lastXorY = y;
         
-        } else if (currentTool.equals("Oval")) {
+        } else if (currentTool == OVAL_TOOL) {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
@@ -261,8 +262,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = x;
             lastXorY = y;
             
-        } else if (currentTool.equals("Line") && lastButton == 1) {
-            if(lastXorX != -1 && lastXorY != -1){
+        } else if (currentTool == LINE_TOOL && lastButton == 1) {
+            if (lastXorX != -1 && lastXorY != -1) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -270,8 +271,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             
             lastXorX = evt.getX();
             lastXorY = evt.getY();            
-        } else if(currentTool.equals("Line") && brokenLine==true){
-            if(lastXorX != -1 && lastXorY != -1){
+        } else if (currentTool == LINE_TOOL && brokenLine==true) {
+            if (lastXorX != -1 && lastXorY != -1) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -284,18 +285,18 @@ public class DrawingPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formMouseDragged
     
      /**
-     * Draws line.
+     * Draws a line.
      */
-    private void drawLine(int x, int y, int x1, int y1){
+    private void drawLine(int x, int y, int x1, int y1) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         graphics.setColor(currentColor);
         graphics.drawLine(x, y, lastX, lastY);
     };
     
     /**
-     * Draws line in XOR mode.
+     * Draws a line in XOR mode.
      */
-    private void drawXorLine(int x, int y, int x1, int y1){
+    private void drawXorLine(int x, int y, int x1, int y1) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         graphics.setXORMode(new java.awt.Color(0xAAAAAA));
         graphics.setColor(currentColor);
@@ -304,9 +305,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     };
 
     /**
-     * Draws rectangle.
+     * Draws a rectangle.
      */
-    private void drawRect(int x, int y, int w, int h){
+    private void drawRect(int x, int y, int w, int h) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         if (fill == true) {
             graphics.setColor(currentFillColor);                
@@ -320,9 +321,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     };
     
     /**
-     * Draws rectangle in XOR mode.
+     * Draws a rectangle in XOR mode.
      */
-    private void drawXorRect(int x, int y, int w, int h){
+    private void drawXorRect(int x, int y, int w, int h) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         graphics.setXORMode(graphics.getBackground());
         if (fill == true) {
@@ -337,9 +338,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     };
 
     /**
-     * Draws oval.
+     * Draws an oval.
      */
-    private void drawOval(int x, int y, int w, int h){
+    private void drawOval(int x, int y, int w, int h) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         if (fill == true) {
             graphics.setColor(currentFillColor);
@@ -353,9 +354,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     };
     
     /**
-     * Draws oval in XOR mode.
+     * Draws an oval in XOR mode.
      */
-    private void drawXorOval(int x, int y, int w, int h){
+    private void drawXorOval(int x, int y, int w, int h) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         graphics.setXORMode(graphics.getBackground());
         if (fill == true) {
@@ -373,7 +374,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     /**
      * Erases.
      */
-    private void drawErase(int x, int y, int w, int h){
+    private void drawErase(int x, int y, int w, int h) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         graphics.setColor(currentColor);                
         graphics.fillRect(x, y, w, h);
@@ -384,7 +385,7 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @param tool Tool to set the drawing tool to
      * @see netboard.DrawingPanel#currentTool
      */
-    public void setCurrentTool(String tool) {
+    public void setCurrentTool(int tool) {
         currentTool = tool;
     }
     
@@ -517,9 +518,9 @@ public class DrawingPanel extends javax.swing.JPanel {
     // My variables declaration
     /**
      * Current drawing tool
-     * @see netboard.DrawingPanel#setCurrentTool(String)
+     * @see netboard.DrawingPanel#setCurrentTool(int)
      */
-    private String currentTool = "Pen";
+    private int currentTool = 0;
     /**
      * Current outline drawing color
      * @see netboard.DrawingPanel#setCurrentOutlineColor
@@ -587,10 +588,14 @@ public class DrawingPanel extends javax.swing.JPanel {
      */    
     private boolean outline = true;
     /**
-     * Tells if we are in mode of drawing broken line.
+     * Tells if we are in mode of drawing a broken line.
      */    
     private boolean brokenLine = false;
     
-
+    public static final int PEN_TOOL = 0;
+    public static final int LINE_TOOL = 1;
+    public static final int RECT_TOOL = 2;
+    public static final int OVAL_TOOL = 3;
+    public static final int EREASER_TOOL = 4;
     // End of my variables declaration
 }
