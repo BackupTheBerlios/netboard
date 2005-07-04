@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.17 2005/06/28 10:40:24 golish Exp $
+ * $Id: GUI.java,v 1.18 2005/07/04 16:59:52 schylek Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -159,7 +159,7 @@ public class GUI extends javax.swing.JFrame {
 
         outlineLabel.setText("Outline:");
         colorChooserPanel.add(outlineLabel);
-        outlineLabel.setBounds(0, 60, 70, 15);
+        outlineLabel.setBounds(0, 60, 70, 14);
 
         outlineColorChooserButton.setBackground(drawingPanel.getCurrentOutlineColor());
         outlineColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -169,11 +169,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(outlineColorChooserButton);
-        outlineColorChooserButton.setBounds(0, 80, 50, 10);
+        outlineColorChooserButton.setBounds(0, 80, 50, 9);
 
         fillLabel.setText("Fill:");
         colorChooserPanel.add(fillLabel);
-        fillLabel.setBounds(0, 100, 30, 15);
+        fillLabel.setBounds(0, 100, 30, 14);
 
         fillColorChooserButton.setBackground(drawingPanel.getCurrentFillColor());
         fillColorChooserButton.addActionListener(new java.awt.event.ActionListener() {
@@ -183,7 +183,7 @@ public class GUI extends javax.swing.JFrame {
         });
 
         colorChooserPanel.add(fillColorChooserButton);
-        fillColorChooserButton.setBounds(0, 120, 50, 10);
+        fillColorChooserButton.setBounds(0, 120, 50, 9);
 
         fillCheckBox.setSelected(drawingPanel.getFill());
         fillCheckBox.addActionListener(new java.awt.event.ActionListener() {
