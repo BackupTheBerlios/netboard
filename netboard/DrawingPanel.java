@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.20 2005/07/05 15:25:37 golish Exp $
+ * $Id: DrawingPanel.java,v 1.21 2005/07/05 15:46:11 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -126,7 +126,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         Main.getGUI().setCoords(evt.getX(), evt.getY());
         
         if (currentTool == LINE_TOOL && brokenLine == true) {
-            if (lastXorX >= 0 && lastXorY >= 0) {
+            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -250,8 +250,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
-            if (lastXorX >= 0 && lastXorY >= 0) {
-                if (lastXorW > 0 && lastXorH > 0) {
+            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
+                if (lastXorW != 0 && lastXorH != 0) { // Don't even dare to think about changing it to "> 0"!
                     drawXorRect(lastXorX, lastXorY, lastXorW, lastXorH);
                 }
                 
@@ -267,8 +267,8 @@ public class DrawingPanel extends javax.swing.JPanel {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
-            if (lastXorX >= 0 && lastXorY >= 0) {
-                if (lastXorW > 0 && lastXorH > 0) {
+            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
+                if (lastXorW != 0 && lastXorH != 0) { // Don't even dare to think about changing it to "> 0"!
                     drawXorOval(lastXorX, lastXorY, lastXorW, lastXorH);
                 }
                 
@@ -281,7 +281,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = x;
             lastXorY = y;
         } else if (currentTool == LINE_TOOL && lastButton == 1) {
-            if (lastXorX >= 0 && lastXorY >= 0) {
+            if (lastXorX != -1 && lastXorY != -1) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
