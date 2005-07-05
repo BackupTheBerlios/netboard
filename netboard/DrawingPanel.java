@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.17 2005/07/05 11:13:08 golish Exp $
+ * $Id: DrawingPanel.java,v 1.18 2005/07/05 11:18:43 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -554,11 +554,16 @@ public class DrawingPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     // My variables declaration
+    public static final int PEN_TOOL = 0;
+    public static final int LINE_TOOL = 1;
+    public static final int RECT_TOOL = 2;
+    public static final int OVAL_TOOL = 3;
+    public static final int EREASER_TOOL = 4;    
     /**
      * Current drawing tool
      * @see netboard.DrawingPanel#setCurrentTool(int)
      */
-    private int currentTool = 0;
+    private int currentTool = PEN_TOOL;
     /**
      * Current outline drawing color
      * @see netboard.DrawingPanel#setCurrentOutlineColor
@@ -629,11 +634,5 @@ public class DrawingPanel extends javax.swing.JPanel {
      * Tells if we are in mode of drawing a broken line.
      */    
     private boolean brokenLine = false;
-    
-    public static final int PEN_TOOL = 0;
-    public static final int LINE_TOOL = 1;
-    public static final int RECT_TOOL = 2;
-    public static final int OVAL_TOOL = 3;
-    public static final int EREASER_TOOL = 4;
     // End of my variables declaration
 }
