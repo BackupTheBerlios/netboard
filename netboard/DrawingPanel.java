@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.18 2005/07/05 11:18:43 golish Exp $
+ * $Id: DrawingPanel.java,v 1.19 2005/07/05 11:34:50 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -69,11 +69,12 @@ public class DrawingPanel extends javax.swing.JPanel {
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         resetXorCoords();
+        
         if (currentTool == LINE_TOOL && lastX >= 0 && lastY >= 0) {
             currentColor = currentOutlineColor;
             drawLine(evt.getX(), evt.getY(), lastX, lastY);
             
-            if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3 && brokenLine==true) {
+            if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3 && brokenLine == true) {
                 lastX = evt.getX();
                 lastY = evt.getY();
             }
@@ -82,19 +83,23 @@ public class DrawingPanel extends javax.swing.JPanel {
         int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
         int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
         
-        if (currentTool == OVAL_TOOL && lastX >= 0 && lastY >= 0){
+        if (currentTool == OVAL_TOOL && lastX >= 0 && lastY >= 0) {
             drawOval( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
         }
-        if (currentTool == RECT_TOOL && lastX >= 0 && lastY >= 0){
+        
+        if (currentTool == RECT_TOOL && lastX >= 0 && lastY >= 0) {
             drawRect( x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
         }
-        if(getCursor().getType()!=java.awt.Cursor.DEFAULT_CURSOR && brokenLine==false){
+        
+        if (getCursor().getType() != java.awt.Cursor.DEFAULT_CURSOR && brokenLine == false) {
             java.awt.Cursor normalCursor = new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR);
             setCursor(normalCursor);
         }
-        repaint();
-        if(brokenLine==false)
+        
+        if(brokenLine == false)
             resetCoords();
+                        
+        repaint();
     }//GEN-LAST:event_formMouseReleased
 
     private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
@@ -103,7 +108,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         
         if ((currentTool == LINE_TOOL || currentTool == OVAL_TOOL || currentTool == RECT_TOOL)
             && evt.getButton() == java.awt.event.MouseEvent.BUTTON1) {
-            if(brokenLine==false){
+            if (brokenLine == false) {
                 lastX = evt.getX();
                 lastY = evt.getY();
             }
@@ -121,7 +126,7 @@ public class DrawingPanel extends javax.swing.JPanel {
         Main.getGUI().setCoords(evt.getX(), evt.getY());
         
         if (currentTool == LINE_TOOL && brokenLine == true) {
-            if(lastXorX != -1 && lastXorY != -1) {
+            if (lastXorX >= 0 && lastXorY >= 0) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -284,7 +289,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             
             lastXorX = evt.getX();
             lastXorY = evt.getY();            
-        } else if (currentTool == LINE_TOOL && brokenLine==true) {
+        } else if (currentTool == LINE_TOOL && brokenLine == true) {
             if (lastXorX >= 0 && lastXorY >= 0) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
