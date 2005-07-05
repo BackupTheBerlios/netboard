@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.19 2005/07/04 17:42:47 golish Exp $
+ * $Id: GUI.java,v 1.20 2005/07/05 09:52:46 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -414,7 +414,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_fillCheckBoxActionPerformed
 
     private void fillColorChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fillColorChooserButtonActionPerformed
-        colorChooserType = "fill";
+        colorChooserType = FILL_COLOR_CHOOSER;
         
         colorChooserDialog = javax.swing.JColorChooser.createDialog(
                 this, Main.getAppName() + " - Choose a color", true, colorChooser,
@@ -624,7 +624,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
     
     private void outlineColorChooserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outlineColorChooserButtonActionPerformed
-        colorChooserType = "outline";
+        colorChooserType = OUTLINE_COLOR_CHOOSER;
         
         colorChooserDialog = javax.swing.JColorChooser.createDialog(
                 this, Main.getAppName() + " - Choose a color", true, colorChooser,
@@ -643,29 +643,29 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_outlineColorChooserButtonActionPerformed
 
     private void colorChooserOkButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        if (colorChooserType.equals("outline")) {
+        if (colorChooserType == OUTLINE_COLOR_CHOOSER) {
             changeOutlineColor(colorChooser.getColor());
-        } else if (colorChooserType.equals("fill")) {
+        } else if (colorChooserType == FILL_COLOR_CHOOSER) {
             changeFillColor(colorChooser.getColor());
         }
         
-        colorChooserType = "";
+        colorChooserType = NO_COLOR_CHOOSER;
     }
     
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
-        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.RECT_TOOL);
     }//GEN-LAST:event_rectangleButtonActionPerformed
     
     private void ovalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ovalButtonActionPerformed
-        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.OVAL_TOOL);
     }//GEN-LAST:event_ovalButtonActionPerformed
     
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
-        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.LINE_TOOL);
     }//GEN-LAST:event_lineButtonActionPerformed
     
     private void penButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_penButtonActionPerformed
-        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.PEN_TOOL);
     }//GEN-LAST:event_penButtonActionPerformed
     
     /**
@@ -778,7 +778,10 @@ public class GUI extends javax.swing.JFrame {
     
     // My variables declaration
     private javax.swing.JDialog colorChooserDialog;
-    private String colorChooserType = "";
+    private static final int NO_COLOR_CHOOSER = 1;    
+    private static final int OUTLINE_COLOR_CHOOSER = 0;
+    private static final int FILL_COLOR_CHOOSER = 1;
+    private int colorChooserType = NO_COLOR_CHOOSER;
     /**
      * Text which was previously displayed on the status bar
      */
