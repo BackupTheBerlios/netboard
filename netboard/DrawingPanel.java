@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.19 2005/07/05 11:34:50 golish Exp $
+ * $Id: DrawingPanel.java,v 1.20 2005/07/05 15:25:37 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -320,7 +320,12 @@ public class DrawingPanel extends javax.swing.JPanel {
         
         graphics.setXORMode(graphics.getBackground());
         
-        graphics.setColor(currentColor);
+        if (currentColor.equals(java.awt.Color.black)) {
+            graphics.setColor(new java.awt.Color(51, 0, 51));
+        } else {
+            graphics.setColor(currentColor);
+        }
+            
         graphics.drawLine(x, y, x1, y1);
         
         graphics.setPaintMode();
@@ -352,12 +357,22 @@ public class DrawingPanel extends javax.swing.JPanel {
         graphics.setXORMode(graphics.getBackground());
         
         if (fill == true) {
-            graphics.setColor(currentFillColor);                
+            if (currentFillColor.equals(java.awt.Color.black)) {
+                graphics.setColor(new java.awt.Color(51, 0, 51));
+            } else {
+                graphics.setColor(currentFillColor);
+            }
+            
             graphics.fillRect(x, y, w, h);
         }
         
         if (outline == true) {
-            graphics.setColor(currentOutlineColor);
+            if (currentOutlineColor.equals(java.awt.Color.black)) {
+                graphics.setColor(new java.awt.Color(51, 0, 51));
+            } else {
+                graphics.setColor(currentOutlineColor);
+            }
+            
             graphics.drawRect(x, y, w, h);                
         }
         
@@ -390,12 +405,22 @@ public class DrawingPanel extends javax.swing.JPanel {
         graphics.setXORMode(graphics.getBackground());
         
         if (fill == true) {
-            graphics.setColor(currentFillColor);                
+            if (currentFillColor.equals(java.awt.Color.black)) {
+                graphics.setColor(new java.awt.Color(51, 0, 51));
+            } else {
+                graphics.setColor(currentFillColor);
+            }
+
             graphics.fillOval(x, y, w, h);
         }
 
         if (outline == true) {
-            graphics.setColor(currentOutlineColor);
+            if (currentOutlineColor.equals(java.awt.Color.black)) {
+                graphics.setColor(new java.awt.Color(51, 0, 51));
+            } else {
+                graphics.setColor(currentOutlineColor);
+            }
+
             graphics.drawOval(x, y, w, h);                
         }
         
@@ -445,10 +470,6 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#currentOutlineColor
      */
     public void setCurrentOutlineColor(java.awt.Color color) {
-        if (color.equals(java.awt.Color.black)) {
-            color = new java.awt.Color(51, 0, 51);
-        }
-        
         currentOutlineColor = color;
         resetCoords();
     }
@@ -459,10 +480,6 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#currentFillColor
      */
     public void setCurrentFillColor(java.awt.Color color) {
-        if (color.equals(java.awt.Color.black)) {
-            color = new java.awt.Color(51, 0, 51);
-        }
-                
         currentFillColor = color;
         resetCoords();
     }    
