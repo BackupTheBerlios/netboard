@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.16 2005/07/05 11:10:41 golish Exp $
+ * $Id: DrawingPanel.java,v 1.17 2005/07/05 11:13:08 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -313,7 +313,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     private void drawXorLine(int x, int y, int x1, int y1) {
         java.awt.Graphics2D graphics = drawing.createGraphics();
         
-        graphics.setXORMode(new java.awt.Color(0xAAAAAA));
+        graphics.setXORMode(graphics.getBackground());
         
         graphics.setColor(currentColor);
         graphics.drawLine(x, y, x1, y1);
