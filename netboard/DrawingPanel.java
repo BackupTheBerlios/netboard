@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.14 2005/07/04 17:42:47 golish Exp $
+ * $Id: DrawingPanel.java,v 1.15 2005/07/05 09:58:52 golish Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -413,6 +413,9 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#currentOutlineColor
      */
     public void setCurrentOutlineColor(java.awt.Color color) {
+        if (color.equals(java.awt.Color.black))
+            color = new java.awt.Color(51, 0, 51);
+        
         currentOutlineColor = color;
         resetCoords();
     }
@@ -423,6 +426,9 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#currentFillColor
      */
     public void setCurrentFillColor(java.awt.Color color) {
+        if (color.equals(java.awt.Color.black))
+            color = new java.awt.Color(51, 0, 51);
+                
         currentFillColor = color;
         resetCoords();
     }    
@@ -526,7 +532,7 @@ public class DrawingPanel extends javax.swing.JPanel {
      * @see netboard.DrawingPanel#setCurrentOutlineColor
      * @see netboard.DrawingPanel#getCurrentOutlineColor
      */
-    private java.awt.Color currentOutlineColor = java.awt.Color.black;
+    private java.awt.Color currentOutlineColor = new java.awt.Color(51, 0, 51);
     /**
      * Current filling color
      * @see netboard.DrawingPanel#setCurrentFillColor
