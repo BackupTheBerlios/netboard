@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.22 2005/07/11 15:32:52 schylek Exp $
+ * $Id: DrawingPanel.java,v 1.23 2005/07/11 15:59:49 schylek Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -126,12 +126,12 @@ public class DrawingPanel extends javax.swing.JPanel {
         Main.getGUI().setCoords(evt.getX(), evt.getY());
         
         if (currentTool == LINE_TOOL && brokenLine == true) {
-            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
+            if (drawXor == true) 
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
-            }
-                
+            
             drawXorLine(evt.getX(),evt.getY(), lastX, lastY);
             
+            drawXor = true;
             lastXorX = evt.getX();
             lastXorY = evt.getY();            
             
@@ -275,7 +275,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = x;
             lastXorY = y;
         } else if (currentTool == LINE_TOOL && lastButton == 1) {
-            if (drawXor == true) {
+            if (lastXorX >= 0 && lastXorY >= 0) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
@@ -653,7 +653,7 @@ public class DrawingPanel extends javax.swing.JPanel {
      */    
     private boolean brokenLine = false;
     /**
-     * Needed, much.//FIXME: 
+     * Tells if we have to redraw last XOR drawing (to make it disappear).
      */    
     private boolean drawXor = false;
     
