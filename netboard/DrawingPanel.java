@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.21 2005/07/05 15:46:11 golish Exp $
+ * $Id: DrawingPanel.java,v 1.22 2005/07/11 15:32:52 schylek Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -250,43 +250,38 @@ public class DrawingPanel extends javax.swing.JPanel {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
-            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
-                if (lastXorW != 0 && lastXorH != 0) { // Don't even dare to think about changing it to "> 0"!
-                    drawXorRect(lastXorX, lastXorY, lastXorW, lastXorH);
-                }
+            if (drawXor == true)
+                drawXorRect(lastXorX, lastXorY, lastXorW, lastXorH);
                 
-                drawXorRect(x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
-                                
-                lastXorW = Math.abs(evt.getX() - lastX);
-                lastXorH = Math.abs(evt.getY() - lastY);
-            }
+            drawXorRect(x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
+            lastXorW = Math.abs(evt.getX() - lastX);
+            lastXorH = Math.abs(evt.getY() - lastY);
             
+            drawXor = true;
             lastXorX = x;
             lastXorY = y;
         } else if (currentTool == OVAL_TOOL) {
             int x = (evt.getX() - lastX > 0) ? lastX : evt.getX();
             int y = (evt.getY() - lastY > 0) ? lastY : evt.getY();
 
-            if (lastXorX != -1 && lastXorY != -1) { // Don't even dare to think about changing it to ">= 0"!
-                if (lastXorW != 0 && lastXorH != 0) { // Don't even dare to think about changing it to "> 0"!
-                    drawXorOval(lastXorX, lastXorY, lastXorW, lastXorH);
-                }
-                
-                drawXorOval(x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
-                                
-                lastXorW = Math.abs(evt.getX() - lastX);
-                lastXorH = Math.abs(evt.getY() - lastY);
-            }
+            if (drawXor == true)
+                drawXorOval(lastXorX, lastXorY, lastXorW, lastXorH);
             
+            drawXorOval(x, y, Math.abs(lastX - evt.getX()), Math.abs(lastY - evt.getY()));
+            lastXorW = Math.abs(evt.getX() - lastX);
+            lastXorH = Math.abs(evt.getY() - lastY);
+            
+            drawXor = true;
             lastXorX = x;
             lastXorY = y;
         } else if (currentTool == LINE_TOOL && lastButton == 1) {
-            if (lastXorX != -1 && lastXorY != -1) {
+            if (drawXor == true) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
             drawXorLine(evt.getX(),evt.getY(), lastX, lastY);
             
+            drawXor = true;
             lastXorX = evt.getX();
             lastXorY = evt.getY();            
         } else if (currentTool == LINE_TOOL && brokenLine == true) {
@@ -500,6 +495,7 @@ public class DrawingPanel extends javax.swing.JPanel {
     private void resetXorCoords() {
         lastXorX = lastXorY = -1;
         lastXorH = lastXorW = 0;
+        drawXor = false;
     }
     
     /**
@@ -656,5 +652,10 @@ public class DrawingPanel extends javax.swing.JPanel {
      * Tells if we are in mode of drawing a broken line.
      */    
     private boolean brokenLine = false;
+    /**
+     * Needed, much.//FIXME: 
+     */    
+    private boolean drawXor = false;
+    
     // End of my variables declaration
 }
