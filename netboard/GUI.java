@@ -1,5 +1,5 @@
 /*
- * $Id: GUI.java,v 1.20 2005/07/05 09:52:46 golish Exp $
+ * $Id: GUI.java,v 1.21 2005/07/15 14:31:57 schylek Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>
  *
@@ -589,7 +589,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_exitMenuItemMouseEntered
     
     private void ereaserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ereaserButtonActionPerformed
-        drawingPanel.setCurrentTool(netboard.DrawingPanel.EREASER_TOOL);
+        drawingPanel.setCurrentTool(netboard.DrawingPanel.ERASER_TOOL);
     }//GEN-LAST:event_ereaserButtonActionPerformed
     
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
