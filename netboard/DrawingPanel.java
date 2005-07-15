@@ -1,5 +1,5 @@
 /*
- * $Id: DrawingPanel.java,v 1.24 2005/07/15 14:31:57 schylek Exp $
+ * $Id: DrawingPanel.java,v 1.25 2005/07/15 15:51:34 schylek Exp $
  *
  * Copyright (C) 2005  Marcin 'golish' Goliszewski <golish@niente.eu.org>,
  *                     Slawomir 'schylek' Chylek <schylek@aster.pl>
@@ -76,6 +76,10 @@ public class DrawingPanel extends javax.swing.JPanel {
             drawXor = false;     
             repaint();
         }
+        if(currentTool == LINE_TOOL && brokenLine){
+            drawXorLine(lastX, lastY, lastXorX, lastXorY);
+            drawXor = false;
+        }
     }//GEN-LAST:event_formMouseExited
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
@@ -103,7 +107,9 @@ public class DrawingPanel extends javax.swing.JPanel {
         
         if (currentTool == ERASER_TOOL) {
             erasing = false;
-            drawXorEraser( lastXorX - 12, lastXorY - 12, 25, 25);
+            if(drawXor == true)
+                drawXorEraser( lastXorX - 12, lastXorY - 12, 25, 25);
+            drawXor = false;
         }
         
         if (getCursor().getType() != java.awt.Cursor.DEFAULT_CURSOR && brokenLine == false) {
@@ -267,7 +273,7 @@ public class DrawingPanel extends javax.swing.JPanel {
                 currentColor = currentFillColor;
             }
             
-            if(drawXor == true);
+            if(drawXor == true)
                 drawXorEraser(lastXorX - 12, lastXorY - 12, 25, 25);
             
             drawXorEraser(evt.getX() - 12, evt.getY() - 12, 25, 25);
@@ -310,7 +316,7 @@ public class DrawingPanel extends javax.swing.JPanel {
             lastXorX = x;
             lastXorY = y;
         } else if (currentTool == LINE_TOOL && lastButton == 1) {
-            if (lastXorX >= 0 && lastXorY >= 0) {
+            if (drawXor) {
                 drawXorLine(lastXorX, lastXorY, lastX, lastY);
             }
                 
